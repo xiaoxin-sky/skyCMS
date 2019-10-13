@@ -50,6 +50,5 @@ app.use(static(__dirname+'/public/'));
 
 app.listen('3000');
 console.log('程序已启动');
-console.log(path.join(__dirname));
 
 

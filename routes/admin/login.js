@@ -1,11 +1,13 @@
-var router = require('koa-router')();
 
-router.get('/',async (ctx,next)=>{
-  // console.log(ctx);
-  ctx.render('admin/login');
-});
-router.post('/doLogin',async (ctx)=>{
-  console.log(ctx);
-  
-});
-module.exports = router.routes();
+/* router.post('/doLogin',async (ctx)=>{
+  var userInfo = ctx.request.body;
+  if(userInfo){
+    ctx.session.userInfo = userInfo.username;
+    ctx.redirect('/admin/index');
+  }else{
+    ctx.redirect('/admin/login');
+  }
+}); */
+module.exports =function(ctx){
+  ctx.render(ctx.url.substring(1));
+}
