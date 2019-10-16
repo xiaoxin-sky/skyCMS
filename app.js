@@ -6,10 +6,11 @@ const static = require('koa-static');
 const session = require('koa-session');
 const koaBody = require('koa-body');  
 
+
 const app = new Koa();
 
+//配置post请求解析模块
 app.use(koaBody());
-
 //配置session
 app.keys = ['some secret hurr'];
 const CONFIG = {
@@ -27,7 +28,6 @@ const CONFIG = {
 };
  
 app.use(session(CONFIG, app));
- 
 
 app.use(async (ctx,next)=>{
   ctx.state.__HOST__ = 'http://'+ctx.header.host;
