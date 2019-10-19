@@ -9,7 +9,8 @@ router.use(async (ctx,next)=>{
     if(ctx.session.userInfo){
       await next();
     }else{
-      if(ctx.url === "/admin/login" || ctx.url === '/admin/doLogin'){
+      // ctx.url.match(/(\/admin\/login\/\?{1}.*)$/);匹配login后面传递的参数
+      if(ctx.url.match(/\/admin\/login|(\/admin\/login\/\?{1}.*)$/) || ctx.url === '/admin/doLogin'){
         await next();
       }else{
         ctx.redirect('/admin/login');
