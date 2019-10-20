@@ -36,13 +36,15 @@ router.get('*',async (ctx,next)=>{
     //判断请求中是否带有参数
     // JSON.stringify(ctx.query) == '{}';
     
-    
+    console.log(ctx.url);
     //自定义get参数对象，防止提出参数后，ctx.query获取不到get参数
     ctx.pathParams = ctx.query;
     //如果包含参数，剔除掉参数/admin/login?mycode=1  =》 /admin/login
-    if(JSON.stringify(ctx.query) != '{}'){
+    /* if(JSON.stringify(ctx.query) != '{}'){
       ctx.url = ctx.url.match(/(\/\w{1,}){1,}/)[0];
-    }
+    } */
+    ctx.query = '';
+    
     let controller = process.cwd()+'/routes'+ctx.url+'.js';
     let view = process.cwd()+'/views'+ctx.url+'.html';
     var controllerExit = await fileExist(controller).catch(e=>{
@@ -52,7 +54,7 @@ router.get('*',async (ctx,next)=>{
       console.log(e);
     });
     if(controllerExit && viewExit){
-      require(controller)(ctx);
+    await require(controller)(ctx);
     }else{
       ctx.status = 404;
     }

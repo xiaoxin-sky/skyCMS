@@ -16,9 +16,9 @@ class Db {
   }
   connect(){
     return new Promise((resolve,reject)=>{
-      // if(this.dbClient!=''){
-      //   resolve(this.dbClient);
-      // }else{
+      if(this.dbClient!=''){
+        resolve(this.dbClient);
+      }else{
         let client = new MongoClient(config.url,{useNewUrlParser: true,useUnifiedTopology: true});
         client.connect(err=>{
           if(err){
@@ -27,7 +27,7 @@ class Db {
           this.dbClient = client.db(config.dbName);
           resolve(this.dbClient);
         })
-      // }
+      }
     })
   }
   find(collentionName,json){
@@ -40,6 +40,32 @@ class Db {
         }   
         resolve(docs);
       })
+    })
+  }
+  findPaging(){
+    return new Promise(async (resolve,reject)=>{
+      let connect = await this.connect();
+      let resulte = connect.collection(collentionName).find(json).le;
+      resulte.toArray((err,docs)=>{
+        if(err){
+          return reject(err);
+        }   
+        resolve(docs);
+      })
+    })
+  }
+  insert(collentionName,json){
+    return new Promise(async (resolve,reject)=>{
+      let connect = await this.connect();
+      let resulte = connect.collection(collentionName).insertOne(json);
+      
+      resolve(resulte);
+      /* resulte.toArray((err,result)=>{
+        if(err){
+          return reject(err);
+        }   
+        resolve(result);
+      }) */
     })
   }
 }

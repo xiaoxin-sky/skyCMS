@@ -56,15 +56,15 @@
             </ul>
             <ul class="layui-nav right" lay-filter="">
                 <li class="layui-nav-item">
-                    <a href="javascript:;">admin</a>
+                    <a href="javascript:;">{{user_name}}</a>
                     <dl class="layui-nav-child">
                         <!-- 二级菜单 -->
+                        <!--<dd>
+                            <a onclick="xadmin.open('个人信息','http://www.baidu.com')">个人信息</a></dd>-->
                         <dd>
-                            <a onclick="xadmin.open('个人信息','http://www.baidu.com')">个人信息</a></dd>
+                            <a href="./login">切换帐号</a></dd>
                         <dd>
-                            <a onclick="xadmin.open('切换帐号','http://www.baidu.com')">切换帐号</a></dd>
-                        <dd>
-                            <a href="./login" >退出</a></dd>
+                            <a href="./login?loginout=true" >退出</a></dd>
                     </dl>
                 </li>
                 <li class="layui-nav-item to-index">
@@ -79,8 +79,8 @@
                 <ul id="nav">
                     <li>
                         <a href="javascript:;">
-                            <i class="iconfont left-nav-li" lay-tips="会员管理">&#xe6b8;</i>
-                            <cite>会员管理</cite>
+                            <i class="iconfont left-nav-li" lay-tips="用户管理">&#xe6b8;</i>
+                            <cite>用户管理</cite>
                             <i class="iconfont nav_right">&#xe697;</i></a>
                         <ul class="sub-menu">
                             <li>
@@ -125,34 +125,31 @@
                     </li>
                     <li>
                         <a href="javascript:;">
-                            <i class="iconfont left-nav-li" lay-tips="订单管理">&#xe723;</i>
-                            <cite>订单管理</cite>
+                            <i class="iconfont left-nav-li" lay-tips="文章管理">&#xe723;</i>
+                            <cite>文章管理</cite>
                             <i class="iconfont nav_right">&#xe697;</i></a>
                         <ul class="sub-menu">
                             <li>
-                                <a onclick="xadmin.add_tab('订单列表','order-list.html')">
+                                <a onclick="xadmin.add_tab('文章列表','order-list.html')">
                                     <i class="iconfont">&#xe6a7;</i>
-                                    <cite>订单列表</cite></a>
+                                    <cite>文章列表</cite></a>
                             </li>
                             <li>
-                                <a onclick="xadmin.add_tab('订单列表1','order-list1.html')">
+                                <a onclick="xadmin.add_tab('草稿箱','order-list.html')">
                                     <i class="iconfont">&#xe6a7;</i>
-                                    <cite>订单列表1</cite></a>
+                                    <cite>草稿箱</cite></a>
+                            </li>
+                            <li>
+                                <a onclick="xadmin.add_tab('回收站','order-list.html')">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    <cite>回收站</cite></a>
                             </li>
                         </ul>
                     </li>
                     <li>
-                        <a href="javascript:;">
+                        <a onclick="xadmin.add_tab('多级分类','./cate')">
                             <i class="iconfont left-nav-li" lay-tips="分类管理">&#xe723;</i>
-                            <cite>分类管理</cite>
-                            <i class="iconfont nav_right">&#xe697;</i></a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a onclick="xadmin.add_tab('多级分类','cate.html')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>多级分类</cite></a>
-                            </li>
-                        </ul>
+                            <cite>分类管理</cite></a>
                     </li>
                     <li>
                         <a href="javascript:;">

@@ -5,7 +5,7 @@ module.exports =async (ctx)=>{
   if(userInfo){
       var res = await db.find('user',{user_name:userInfo.username,password:userInfo.password});
       if(res.length>0){
-        ctx.session.userInfo = userInfo.username;
+        ctx.session.userInfo = res[0];
         ctx.redirect('/admin/index');
       }else{
         ctx.redirect('/admin/login?code=0','/admin/login');

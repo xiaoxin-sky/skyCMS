@@ -9,7 +9,9 @@
   }
 }); */
 module.exports =function(ctx){
-  ctx.render(ctx.url.substring(1),{
-    code:ctx.pathParams.code
-  });
+  console.log(ctx.url.substring(1));
+  if(ctx.pathParams.loginout  == 'true'){
+    ctx.session.userInfo = null ;
+  }
+  ctx.render(ctx.url.substring(1),ctx.pathParams);
 }
