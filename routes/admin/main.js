@@ -1,102 +1,56 @@
 var router = require('koa-router')();
-var fs = require('fs');
-
-
-
-router.use(async (ctx,next)=>{
-  let reg = /(\/\w{1,})$|(\/\w{1,}\?{1}.*)$/;
-  if( ctx.url.match(reg) ){
-    if(ctx.session.userInfo){
-      await next();
-    }else{
-      // ctx.url.match(/(\/admin\/login\/\?{1}.*)$/);匹配login后面传递的参数
-      if(ctx.url.match(/\/admin\/login|(\/admin\/login\/\?{1}.*)$/) || ctx.url === '/admin/doLogin'){
-        await next();
-      }else{
-        ctx.redirect('/admin/login');
-      }
-    }
-  }else{
-    await next();
-  }
-  
-})
-
+const tools = require(process.cwd()+'/model/tools');
 
 router.get('*',async (ctx,next)=>{
-  /*
+  await next();
+});
+router.post('*',async (ctx,next)=>{
+  await next();
+});
+/**
+ * 当前main方法实现了根据url自动加载controller
+ * get参数需要通过如下方式传递?id=1
+ * 未来想实现get请求通过斜杠(/)方式传递参数
+ */
+router.use(async (ctx,next)=>{  /*
     使用正则匹配到过滤掉静态资源文件，例如css，js等，只处理html模板文件 
     此处只能匹配到结尾路径，如/admin/login 只能匹配到/login或者/login?code=1
    */
-  
-  let reg = /(\/\w{1,})$|(\/\w{1,}\?{1}.*)$/;
-  // console.log(ctx.url.match(reg));
-  
-  if( ctx.url.match(reg) ){
-    //判断请求中是否带有参数
-    // JSON.stringify(ctx.query) == '{}';
-    
-    console.log(ctx.url);
-    //自定义get参数对象，防止提出参数后，ctx.query获取不到get参数
-    ctx.pathParams = ctx.query;
-    //如果包含参数，剔除掉参数/admin/login?mycode=1  =》 /admin/login
-    /* if(JSON.stringify(ctx.query) != '{}'){
-      ctx.url = ctx.url.match(/(\/\w{1,}){1,}/)[0];
-    } */
-    ctx.query = '';
-    
-    let controller = process.cwd()+'/routes'+ctx.url+'.js';
-    let view = process.cwd()+'/views'+ctx.url+'.html';
-    var controllerExit = await fileExist(controller).catch(e=>{
-      console.log(e);
-    });
-    var viewExit = await fileExist(view).catch(e=>{
-      console.log(e);
-    });
-    if(controllerExit && viewExit){
-    await require(controller)(ctx);
-    }else{
-      ctx.status = 404;
-    }
-
-    
-      
-  }else{
+  let staticReg = /(\/\w{1,})$|(\/\w{1,}\?{1}.*)$/;
+  if(!ctx.url.match(staticReg)){
     await next();
+  }else{
+    //匹配不带参数的网址
+    let reg = /(?<=\/)[A-Za-z0-9]{1,}/g;
+    let pathArr = ctx.url.match(reg);
+    // var view = process.cwd()+'/views'+ctx.url+'.html';
+    if(pathArr.length==1){
+      let backendPath = pathArr[0];
+      let backendExit = await  tools.controllerExit(ctx,backendPath).catch(()=>ctx.render('404'));
+      
+      if(backendExit){//如果输入了正确的后台地址
+        if(ctx.session.userInfo){//已经是登录状态
+          ctx.url = ctx.url+'/index/index';
+          await require(tools.getControllerPath(backendPath+'/index'))(ctx);
+        }else{
+          ctx.url = ctx.url+'/login/index';
+          await require(tools.getControllerPath(backendPath+'/login'))(ctx);
+        }
+      }else{
+        console.log(backendExit);
+      }
+    }else if(pathArr.length<=3){
+      let  method = pathArr.length==3 ? pathArr.pop() :'index';
+      let path = '/'+pathArr.join('/');
+      let controllerExit =await  tools.controllerExit(ctx,path).catch(()=>ctx.render('404'));
+      
+      if(controllerExit){
+        await require(tools.getControllerPath(path))(ctx,method);
+        await next();
+      }
+    }
   }
-    
 });
 
-router.post('*',async (ctx,next)=>{
-  let reg = /(\/\w{1,})$/;
-  if( ctx.url.match(reg) ){
-    let api = process.cwd()+'/api'+ctx.url+'.js';
-    var apiExit = await fileExist(api).catch(e=>{
-      console.log(e);
-    });
-    if(apiExit){
-      await require(api)(ctx);
-    }else{
-      ctx.status = 404;
-    }
-  }else{
-    await next();
-  }
-})
-
-
-function fileExist(path){
-  return new Promise((resolve,reject)=>{
-    fs.access(path, fs.constants.F_OK, (err) => {
-      if(err) reject(err);
-      resolve(true);
-    });
-  });
-}
-
-
-/* router.use('/login',login);
-router.use('/user',user);
-router.use('/home',home); */
 
 module.exports = router.routes();

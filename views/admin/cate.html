@@ -18,9 +18,9 @@
                             <form class="layui-form layui-col-space5">
                                 <div class="layui-input-inline layui-show-xs-block">
                                     <input class="layui-input" placeholder="分类名" name="cate_name"></div>
-                                    <input type="hidden" name="cate_id" value="0">
-                                    <input type="hidden" name="father_id" value="0">
+                                    <input type="hidden" name="father_id" value='0'>
                                     <input type="hidden" name="sort" value="{{next_sort}}">
+                                    <input type="hidden" name="status" value="true">
                                 <div class="layui-input-inline layui-show-xs-block">
                                     <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon"></i>增加</button>
                                 </div>
@@ -47,7 +47,30 @@
                                   <th width="250">操作</th>
                               </thead>
                               <tbody class="x-cate">
-                                <tr cate-id='1' fid='0' >
+                                {{each categorys}}
+                                  <tr cate-id='{{$value._id}}' fid='{{$value.father_id}}' >
+                                    <td>
+                                      <input type="checkbox" name="" lay-skin="primary">
+                                    </td>
+                                    <td>{{$value._id}}</td>
+                                    <td>
+                                      {{if $value.father_id=='0'}}
+                                        <i class="layui-icon x-show" status='true'>&#xe623;</i>
+                                      {{/if}}
+                                      {{$value.cate_name}}
+                                    </td>
+                                    <td><input type="text" class="layui-input x-sort" name="order" value="{{$value.sort}}"></td>
+                                    <td>
+                                      <input type="checkbox" name="switch"  lay-text="开启|停用" {{if $value.status=="true"}} checked="" {{/if}} lay-skin="switch">
+                                    </td>
+                                    <td class="td-manage">
+                                      <button class="layui-btn layui-btn layui-btn-xs"  onclick="xadmin.open('编辑','admin-edit.html')" ><i class="layui-icon">&#xe642;</i>编辑</button>
+                                      <button class="layui-btn layui-btn-warm layui-btn-xs"  onclick="xadmin.open('编辑','admin-edit.html')" ><i class="layui-icon">&#xe642;</i>添加子栏目</button>
+                                      <button class="layui-btn-danger layui-btn layui-btn-xs"  onclick="member_del(this,'要删除的id')" href="javascript:;" ><i class="layui-icon">&#xe640;</i>删除</button>
+                                    </td>
+                                  </tr>
+                                {{/each}}
+                                <!--<tr cate-id='1' fid='0' >
                                   <td>
                                     <input type="checkbox" name="" lay-skin="primary">
                                   </td>
@@ -180,19 +203,29 @@
                                     <button class="layui-btn layui-btn-warm layui-btn-xs"  onclick="xadmin.open('编辑','admin-edit.html')" ><i class="layui-icon">&#xe642;</i>添加子栏目</button>
                                     <button class="layui-btn-danger layui-btn layui-btn-xs"  onclick="member_del(this,'要删除的id')" href="javascript:;" ><i class="layui-icon">&#xe640;</i>删除</button>
                                   </td>
-                                </tr>
+                                </tr>-->
                               </tbody>
                             </table>
                         </div>
                         <div class="layui-card-body ">
                             <div class="page">
                                 <div>
-                                    <a class="prev" href="">&lt;&lt;</a>
-                                    <a class="num" href="">1</a>
+                                    <a class="prev" href="?pagenum=1">&lt;&lt;</a>
+                                    
+                                    <% for(var i = 1; i <= pagelength; i++){ %>
+                                      {{if i==pageNum}} 
+                                        <!-- <a class="num" href="?pagenum=<%= i %>">  <%= i %> </a> -->
+                                        <span class="current"><%= i %></span>
+                                      {{else}}
+                                        <a class="num" href="?pagenum=<%= i %>">  <%= i %> </a>
+                                      {{/if}}
+                                    <% } %>
+                                    <!-- <a class="num" href="?categorys=">1</a>
                                     <span class="current">2</span>
                                     <a class="num" href="">3</a>
-                                    <a class="num" href="">489</a>
-                                    <a class="next" href="">&gt;&gt;</a></div>
+                                    <a class="num" href="">489</a> -->
+
+                                    <a class="next" href="?pagenum={{pagelength}}">&gt;&gt;</a></div>
                             </div>
                         </div>
                     </div>

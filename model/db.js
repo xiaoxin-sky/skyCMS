@@ -30,35 +30,74 @@ class Db {
       }
     })
   }
-  find(collentionName,json){
+  /**
+   *  
+   */
+  find(collentionName,json,count=false){
     return new Promise(async (resolve,reject)=>{
       let connect = await this.connect();
-      let resulte = connect.collection(collentionName).find(json);
+      if(count){
+        var resulte = connect.collection(collentionName).find(json).count();
+        if(resulte.error)return reject(resulte.error);
+        resolve(resulte);
+      }else{
+        var resulte = connect.collection(collentionName).find(json);
+        resulte.toArray((err,docs)=>{
+          if(err){
+            return reject(err);
+          }   
+          resolve(docs);
+        })
+      }
+      
+      
+    })
+  }
+  /**
+   * 
+   * @param {obj} collentionName 集合名字
+   * @param {jsonObj} json 查询条件
+   * @param {number} skipNum 跳过的个数
+   * @param {number} initPaging 分页大小
+   * @param {jsonObj} sort 排序方式
+   */
+  findPaging(collentionName,json={},skipNum=1,initPaging=5,sort){
+    return new Promise(async (resolve,reject)=>{
+      let connect = await this.connect();
+      /* let skipNum = skipNum||0;//默认跳过数量
+      let initPaging = initPaging||10;//默认分页数量 */
+      // connect.collection(collentionName).deleteMany();
+      skipNum = skipNum-1;
+      if(sort){
+        var resulte = connect.collection(collentionName).find(json).sort(sort).skip(skipNum*initPaging).limit(initPaging);
+      }else{
+        var resulte = connect.collection(collentionName).find(json).skip(skipNum).limit(initPaging);
+      }
       resulte.toArray((err,docs)=>{
         if(err){
           return reject(err);
-        }   
+        }
         resolve(docs);
       })
     })
   }
-  findPaging(){
+  findCount(collentionName,query){
     return new Promise(async (resolve,reject)=>{
-      let connect = await this.connect();
-      let resulte = connect.collection(collentionName).find(json).le;
-      resulte.toArray((err,docs)=>{
-        if(err){
-          return reject(err);
-        }   
-        resolve(docs);
+      let db = await this.connect();
+      var resulte = db.runCommand({
+        count:collentionName,
+        query: query
       })
-    })
+      if(resulte.error)reject(resulte.error);
+      resolve(resulte);
+    });
   }
   insert(collentionName,json){
     return new Promise(async (resolve,reject)=>{
-      let connect = await this.connect();
-      let resulte = connect.collection(collentionName).insertOne(json);
-      
+      let db = await this.connect();
+      json._id = await getNextSequenceValue(collentionName,db);
+      let resulte = db.collection(collentionName).insertOne(json);
+      if(resulte.error)reject(resulte.error);
       resolve(resulte);
       /* resulte.toArray((err,result)=>{
         if(err){
@@ -68,8 +107,19 @@ class Db {
       }) */
     })
   }
-}
 
+}
+function getNextSequenceValue(sequenceName,db){
+  return new Promise(async (resolve,reject)=>{
+    var sequenceDocument =await db.collection('counters').findOneAndUpdate(
+      {'_id': sequenceName },
+      {$inc:{'sequence_value':1}},
+      { returnNewDocument: true }
+    );
+    if(sequenceDocument.error)reject(sequenceDocument.error);
+    resolve(sequenceDocument.value.sequence_value);
+  });
+}
 
 // setTimeout(()=>{
 //   console.time('query2');
