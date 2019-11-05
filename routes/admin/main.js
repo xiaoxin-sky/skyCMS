@@ -1,5 +1,6 @@
-var router = require('koa-router')();
+const router = require('koa-router')();
 const tools = require(process.cwd()+'/model/tools');
+const fs = require('fs');
 
 router.get('*',async (ctx,next)=>{
   await next();
@@ -25,10 +26,9 @@ router.use(async (ctx,next)=>{  /*
     let pathArr = ctx.url.match(reg);
     // var view = process.cwd()+'/views'+ctx.url+'.html';
     if(pathArr.length==1){
-      let backendPath = pathArr[0];
-      let backendExit = await  tools.controllerExit(ctx,backendPath).catch(()=>ctx.render('404'));
+      let backendPath = '/'+pathArr[0];
       
-      if(backendExit){//如果输入了正确的后台地址
+      if(fs.existsSync(process.cwd()+'/controller/'+backendPath)){//如果输入了正确的后台地址
         if(ctx.session.userInfo){//已经是登录状态
           ctx.url = ctx.url+'/index/index';
           await require(tools.getControllerPath(backendPath+'/index'))(ctx);
@@ -37,7 +37,7 @@ router.use(async (ctx,next)=>{  /*
           await require(tools.getControllerPath(backendPath+'/login'))(ctx);
         }
       }else{
-        console.log(backendExit);
+        ctx.render('404');
       }
     }else if(pathArr.length<=3){
       let  method = pathArr.length==3 ? pathArr.pop() :'index';

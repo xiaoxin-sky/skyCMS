@@ -11,7 +11,7 @@ class Login  {
       await this[this.method](this.ctx);
     }else{
       console.log('method不存在');
-      await this.index(this.ctx);
+      await this.ctx.redirect('/admin/login/index');
     }
   }
   async index(ctx){
