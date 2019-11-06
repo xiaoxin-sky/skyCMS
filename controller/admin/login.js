@@ -10,8 +10,7 @@ class Login  {
     if(this.method){
       await this[this.method](this.ctx);
     }else{
-      console.log('method不存在');
-      await this.ctx.redirect('/admin/login/index');
+      await this.ctx.redirect(this.ctx.url);
     }
   }
   async index(ctx){
@@ -21,6 +20,8 @@ class Login  {
     var templateExit = await tools.templateExit(ctx,ctx.url).catch(()=>ctx.render('404'));
     if(templateExit){
       ctx.render(tools.getTemplatePath(ctx.url),ctx.query);
+    }else{
+      ctx.redirect(`${ctx.url}/index`);
     }
   }
   async doLogin(ctx){
@@ -29,7 +30,7 @@ class Login  {
       var res = await db.find('user',{user_name:userInfo.username,password:userInfo.password});
       if(res.length>0){
         ctx.session.userInfo = res[0];
-        ctx.redirect('/admin/login/reg');
+        ctx.redirect('/admin/index/index');
       }else{
         ctx.redirect('/admin/login/index?code=0');
       }

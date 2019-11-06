@@ -46,6 +46,12 @@ class Tools {
     path = path.match(reg).join('/');
     return (process.cwd()+'/views/'+path+'.html');
   }
+  /**
+   * 获取当前执行文件的相对目录
+   */
+  getFatherPath(){
+    return __dirname.replace(process.cwd(),'');
+  }
 }
 
 module.exports = new Tools();
