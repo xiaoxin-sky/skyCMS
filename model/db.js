@@ -54,7 +54,7 @@ class Db {
     })
   }
   /**
-   * 
+   * 分页查找
    * @param {obj} collentionName 集合名字
    * @param {jsonObj} json 查询条件
    * @param {number} skipNum 跳过的个数
@@ -92,6 +92,11 @@ class Db {
       resolve(resulte);
     });
   }
+  /**
+   * 新增一条数据
+   * @param {string} collentionName 集合名
+   * @param {object} json 需要添加的内容
+   */
   insert(collentionName,json){
     return new Promise(async (resolve,reject)=>{
       let db = await this.connect();
@@ -107,8 +112,25 @@ class Db {
       }) */
     })
   }
+  deleteMany(collentionName,json={}){
+    return new Promise(async (resolve,reject)=>{
+      let db = await this.connect();
+      let res = db.collection(collentionName).deleteMany(json);
+      if(res.error)reject(res.error);
+      resolve(res);
+    });
+  }
+  upDateupOne(collentionName,json){
+    return new Promise(async (resolve,reject)=>{
+      let db = await this.connect();
+      let res = db.collection(collentionName).updateOne({'_id':json['_id']},{$set:json});
+      if(res.error)reject(res.error);
+      resolve(res);
+    })
+  }
 
 }
+
 function getNextSequenceValue(sequenceName,db){
   return new Promise(async (resolve,reject)=>{
     var sequenceDocument =await db.collection('counters').findOneAndUpdate(

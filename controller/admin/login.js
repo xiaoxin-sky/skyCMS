@@ -1,5 +1,8 @@
-var tools = require(process.cwd()+'/model/tools');
-var db = require(process.cwd()+'/model/db');
+const tools = require(process.cwd()+'/model/tools');
+const db = require(process.cwd()+'/model/db');
+const tokenSecret = require(process.cwd()+'/model/config').tokenSecret;
+const jwt = require('jsonwebtoken');
+
 class Login  {
   //constructor用于每次执行时候过滤东西
   constructor(ctx,method){
@@ -14,28 +17,29 @@ class Login  {
     }
   }
   async index(ctx){
-    if(ctx.query.loginout  == 'true'){
-      ctx.session.userInfo = null ;
-    }
-    var templateExit = await tools.templateExit(ctx,ctx.url).catch(()=>ctx.render('404'));
-    if(templateExit){
-      ctx.render(tools.getTemplatePath(ctx.url),ctx.query);
-    }else{
-      ctx.redirect(`${ctx.url}/index`);
-    }
+    console.log('jinlaile');
+    // if(ctx.query.loginout  == 'true'){
+    //   ctx.session.userInfo = null ;
+    // }
+    // var templateExit = await tools.templateExit(ctx,ctx.url).catch(()=>ctx.render('404'));
+    // if(templateExit){
+    //   ctx.render(tools.getTemplatePath(ctx.url),ctx.query);
+    // }else{
+    //   ctx.redirect(`${ctx.url}/index`);
+    // }
   }
-  async doLogin(ctx){
-    var userInfo = ctx.request.body;
+  async dologin(ctx){
+    var userInfo = ctx.request.query;
     if(userInfo){
       var res = await db.find('user',{user_name:userInfo.username,password:userInfo.password});
       if(res.length>0){
-        ctx.session.userInfo = res[0];
-        ctx.redirect('/admin/index/index');
+        const token = jwt.sign({iss:'skyCms',user_name:userInfo.username},tokenSecret,{expiresIn:'4h'});
+        ctx.body = {'code':1,'msg':'登录成功','token':token};
       }else{
-        ctx.redirect('/admin/login/index?code=0');
+        ctx.body = {'code':0,'msg':'账号或者密码错误'};
       }
     }else{
-      ctx.redirect('/admin/login/index');
+      ctx.body = {'code':0,'msg':'请输入用户名和密码'};
     }
   }
   reg(){
