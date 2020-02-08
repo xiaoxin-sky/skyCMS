@@ -7,9 +7,10 @@
       <el-col :span="4" :offset="8">
         <div class="grid-content-button">
           <el-button type="primary"
-           @click="dialogVisible = true;soltName='';title='添加一级分类';addCategoryTop;"
-           >添加分类</el-button>
-          <el-button type="primary" @click="submitSoltData">保存</el-button>
+           @click="dialogVisible = true;soltName='';soltPath='';title='添加一级分类';changeSoltNode=null"
+           >添加一级分类</el-button>
+          <!-- 清空分类，勾选清空分类，功能后续完善
+            <el-button type="primary" @click="submitSoltData">清空分类</el-button> -->
           </div></el-col>
     </el-row>
     <el-dialog
@@ -17,7 +18,8 @@
       :visible.sync="dialogVisible"
       width="30%"
       :closeOnClickModal='false'>
-      <el-input v-model="soltName" placeholder="请输入一级导航名称" ></el-input>
+      <el-input style="margin-bottom:10px;" v-model="soltName" placeholder="请输入一级导航名称" ></el-input>
+      <el-input v-model="soltPath" placeholder="请输入一级导航英文名" ></el-input>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="append(soltListData)">确 定</el-button>
@@ -41,6 +43,7 @@
       :allow-drop="allowDrop">
     </el-tree>
   </div>
+  
 </div>
 </template>
 <script>
@@ -52,22 +55,13 @@ import  categoryApi  from '../../api/category';
 
   export default {
     data() {
-      /* const soltListData = [{
-        id: 1,
-        label: '一级 1'
-      },{
-        id: 2,
-        label: '一级 2'
-      },{
-        id: 3,
-        label: '一级 3'
-      }]; */
       return {
         soltListData: [],
         dialogVisible: false,
         soltName: '',
+        soltPath:'',
         title:'添加一级分类',
-        changeSoltData: null,
+        changeSoltNode: null,
         loading:false
       }
     },
@@ -78,7 +72,7 @@ import  categoryApi  from '../../api/category';
       this.$nextTick( function () {
         this.loading = true;
         categoryApi('getCategoryDataList').then((ret)=>{
-          this.soltListData = ret;
+          this.soltListData = ret.categoryData;
           this.loading = false;
         });
         // console.log(data);
@@ -89,67 +83,143 @@ import  categoryApi  from '../../api/category';
        * 添加节点
        */
       append(data) {
-
-        //changeSoltData如果存在，则是 添加子分类或修改分类
-        if( this.changeSoltData  ){
+        //changeSoltNode如果存在，则是 添加子分类或修改分类
+        if( this.changeSoltNode  ){
           //isAddSort 是否为添加子分类
-          if(!this.changeSoltData.isAddSort){//修改分类
-            if(!this.soltName.length) return this.editSortError();
-            this.changeSoltData.cate_name = this.soltName;
+          if(!this.changeSoltNode.isAddSort){//修改分类
+            if(!this.soltName.length || !this.soltPath.length) return this.editSortError();
+            this.changeSoltNode.data.cate_name = this.soltName;
+            this.changeSoltNode.data.cate_path = this.soltPath;
+            this.upDateCategory();
           }else{//添加分类
             //子分类上的topId都指的是对应一级分类的_id
-            let newChild = {cate_name: this.soltName };
-            if (!this.changeSoltData.children){
-              this.$set(this.changeSoltData, 'children', []);
+            let newChild = {_id:Date.now(),cate_name: this.soltName,cate_path:this.soltPath};
+            if (!this.changeSoltNode.data.children){
+              this.$set(this.changeSoltNode.data, 'children', []);
             }
-            this.changeSoltData.children.push(newChild);
-            //获取操作节点的node对象节点
-            let node = this.$refs.tree.getNode(this.changeSoltData);
-            //获取操作节点的所在一级分类全部数据
-            let topCategoryData = null;
-            
-            while(node.parent != null){
-              
-              if(node.parent.parent == null){
-                topCategoryData = node.data;
-              }
-              node = node.parent;
-            }
-            
-            this.upDateCategory(topCategoryData);
+            this.changeSoltNode.data.children.push(newChild);
+
+            this.upDateCategory();
 
           }
           this.dialogVisible = false;//隐藏弹窗
         }else{
           //如果data是数组，添加一级分类，否则是添加子分类或修改分类
           if(isArray(data)){
-            if(!this.soltName.length) return this.editSortError();
+            
+            if(!this.soltName.length || !this.soltPath.length) return this.editSortError();
             this.dialogVisible = false;//隐藏弹窗
-            let newChild = { cate_name: this.soltName,disabled:true };
+            let newChild = { cate_name: this.soltName,cate_path: this.soltPath,disabled:true };
             let res = this.$refs.tree.data.push(newChild);
+            
             this.addCategory();
           }
         }
         
       },
       remove(node, data) {
-        console.log(node.parent);
-        console.log(this.soltListData);
+        
         const parent = node.parent;
         const children = parent.data.children || parent.data;
-        const index = children.findIndex(d => d.id === data.id);
+        const index = children.findIndex(d =>d._id === data._id);
+        //这一步为了配合更新方法或者删除方法使用
+        this.changeSoltNode = node;
+        parent.parent == null ? this.delTopCategory(node.data) : this.upDateCategory();
         children.splice(index, 1);
+        
+      },
+      //isAddSort 添加子分类，默认是不添加 ,true添加
+      openSortSetDialog(node,isAddSort=false){
+        this.dialogVisible = true;
+        this.changeSoltNode = node;
+        this.changeSoltNode.isAddSort = isAddSort;
+        if(isAddSort){
+          this.title = '添加子分类';
+          this.soltName = '';
+          this.soltPath = '';
+        }else{
+          this.title = '修改分类';
+          this.soltName = node.data.cate_name;
+          this.soltPath = node.data.cate_path;
+        }
+      },
+      //添加一级分类
+      addCategory(){
+        
+        categoryApi('addCategoryTop',{'cate_name':this.soltName,'cate_path':this.soltPath}).then(ret=>{
+          console.log(ret);
+          let topData = this.$refs.tree.data;
+          console.log(topData);
+          topData.forEach(item=>{
+            if( item.disabled && item._id == undefined ){
+              item._id = ret.insertedId;
+              item.disabled = false;
+            }
+          });
+          console.log(topData);
+          
+        });
+      },
+      //获取顶级分类下面的所有数据
+      //isdelete 默认false 不清除顶级分类数据， true：清除顶级分类数据
+      //备注：如果是删除事件调用到了顶级
+      getTopCategory(){
+        
+        let changeSoltNode = this.changeSoltNode;
+        //获取操作节点的所在一级分类全部数据
+        let topCategoryData = null;
+        while(changeSoltNode.parent != null){
+          if(  changeSoltNode.parent.parent == null){
+            topCategoryData = changeSoltNode.data;
+          }
+          changeSoltNode = changeSoltNode.parent;
+        }
+        
+        return topCategoryData;
+      },
+      //更新分类数据
+      upDateCategory(){
+        let  topCategoryData = this.getTopCategory();
+        categoryApi('upDateCategory',topCategoryData).then(ret=>{
+          console.log(ret);
+          if(ret.code == 1){
+            this.editSuccess();
+          }
+        });
+        
+      },
+      //删除一级分类
+      delTopCategory(topCategoryData){
+          categoryApi('delTopCategory',topCategoryData).then(ret=>{
+            console.log(ret);
+            if(ret.code == 1){
+              this.editSuccess();
+            }
+          });
+          
       },
       renderContent(h, { node, data, store }) {
         return (
           <span class="custom-tree-node" >
             <span>{data.cate_name}</span>
             <span>
-              <el-button size="mini" type="success is-plain"  on-click={ () => this.openSortSetDialog(data) }>修改</el-button>
-              <el-button size="mini" type="primary is-plain"  on-click={ () => this.openSortSetDialog(data,true) }>添加</el-button>
+              <el-button size="mini" type="success is-plain"  on-click={ () => this.openSortSetDialog(node) }>修改</el-button>
+              <el-button size="mini" type="primary is-plain"  on-click={ () => this.openSortSetDialog(node,true) }>添加</el-button>
               <el-button size="mini" type="danger is-plain"  on-click={ () => this.remove(node, data) }>删除</el-button>
             </span>
           </span>);
+      },
+      editSuccess(){
+        this.$notify.success({
+          title: '操作提示',
+          message: '成功'
+        });
+      },
+      editSortError(){
+        this.$notify.error({
+          title: '添加错误',
+          message: '分类不能为空,请填写分类后再添加'
+        });
       },
       allowDrop(draggingNode, dropNode, type){
         
@@ -167,48 +237,7 @@ import  categoryApi  from '../../api/category';
       },
       handleDragEnd(draggingNode, dropNode, dropType, ev) {
         return false;
-      },
-      //isAddSort 是否为添加子分类，默认是不添加
-      openSortSetDialog(data,isAddSort=false){
-        // console.log(data);
-        this.dialogVisible = true;
-        this.changeSoltData = data;
-        this.changeSoltData.isAddSort = isAddSort;
-        if(isAddSort){
-          this.title = '添加子分类';
-          this.soltName = '';
-        }else{
-          this.title = '修改分类';
-          this.soltName = data.cate_name;
-        }
-      },
-      submitSoltData(){
-        
-      },
-      addCategory(){
-        categoryApi('addCategoryTop',{'cate_name':this.soltName}).then(ret=>{
-          console.log(ret);
-          let topData = this.$refs.tree.data;
-          topData.forEach(item=>{
-            if( item.disabled && item._id == undefined ){
-              item._id = ret.insertedId;
-              item.disabled == false;
-            }
-          });
-        });
-      },
-      upDateCategory(data){
-        categoryApi('upDateCategory',data).then(ret=>{
-          console.log(ret);
-        });
-      },
-      editSortError(){
-        this.$notify.error({
-          title: '添加错误',
-          message: '分类不能为空,请填写分类后再添加'
-        });
-      },
-      
+      }
     }
   };
 </script>
@@ -230,5 +259,8 @@ import  categoryApi  from '../../api/category';
   }
   .grid-content-button{
     text-align: right;
+  }
+  .el-pagination{
+    text-align: center;
   }
 </style>

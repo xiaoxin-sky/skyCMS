@@ -39,6 +39,15 @@ class Category{
             data:this.query
         })
     }
+    //删除一级分类
+    delTopCategory(){
+        return request({
+            url:'./category/delTopCategory',
+            method:'post',
+            headers:{'Content-Type':'application/json'},
+            data:this.query
+        })
+    }
 }
 export default async function(apiName,query){
     let category = new Category(apiName,query);

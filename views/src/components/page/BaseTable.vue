@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 基础表格
+                    <i class="el-icon-lx-cascades"></i> 文章列表
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -15,46 +15,46 @@
                     class="handle-del mr10"
                     @click="delAllSelection"
                 >批量删除</el-button>
-                <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
+                <el-button
+                    type="primary"
+                    icon="el-icon-change"
+                    class="handle-del mr10"
+                    @click="changAtricalStatus();"
+                >批量修改状态</el-button>
+                <!--分类筛选以后完善 
+                    <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
                     <el-option key="1" label="广东省" value="广东省"></el-option>
                     <el-option key="2" label="湖南省" value="湖南省"></el-option>
-                </el-select>
-                <el-input v-model="query.name" placeholder="用户名" class="handle-input mr10"></el-input>
+                </el-select> -->
+                <el-input v-model="query.name" placeholder="文章标题" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
             </div>
             <el-table
+                v-loading='loading'
                 :data="tableData"
                 border
                 class="table"
                 ref="multipleTable"
                 header-cell-class-name="table-header"
-                @selection-change="handleSelectionChange"
-            >
+                @selection-change="handleSelectionChange">
+
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-                <el-table-column prop="name" label="用户名"></el-table-column>
-                <el-table-column label="账户余额">
-                    <template slot-scope="scope">￥{{scope.row.money}}</template>
-                </el-table-column>
-                <el-table-column label="头像(查看大图)" align="center">
-                    <template slot-scope="scope">
-                        <el-image
-                            class="table-td-thumb"
-                            :src="scope.row.thumb"
-                            :preview-src-list="[scope.row.thumb]"
-                        ></el-image>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="address" label="地址"></el-table-column>
-                <el-table-column label="状态" align="center">
+                <el-table-column prop="_id" label="文章ID" width="100" align="center"></el-table-column>
+                <el-table-column prop="user_name" label="发布者" width="100"></el-table-column> 
+                <el-table-column prop="title" label="标题" ></el-table-column> 
+                <el-table-column label="状态" align="center" width="100">
                     <template slot-scope="scope">
                         <el-tag
-                            :type="scope.row.state==='成功'?'success':(scope.row.state==='失败'?'danger':'')"
-                        >{{scope.row.state}}</el-tag>
+                            :type="scope.row.status === true ?'success':(scope.row.status===false?'danger':'')"
+                            style="cursor:pointer;"
+                            @click=" changAtricalStatus(scope.row);"
+                        >{{scope.row.status ? "显示" : '隐藏'}}</el-tag>
                     </template>
+                        
                 </el-table-column>
+                <el-table-column prop="cate_name" label="所属分类" align="center" width="160" ></el-table-column> 
 
-                <el-table-column prop="date" label="注册时间"></el-table-column>
+                <el-table-column prop="creat_time" label="发布日期" width="180" align="center"></el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <el-button
@@ -103,6 +103,10 @@
 
 <script>
 import { fetchData } from '../../api/index';
+import articalApi from '../../api/artical';
+import { isArray } from 'util';
+import bus from '../common/bus';
+import myStore from '../../store/articalStore.js';
 export default {
     name: 'basetable',
     data() {
@@ -111,7 +115,7 @@ export default {
                 address: '',
                 name: '',
                 pageIndex: 1,
-                pageSize: 10
+                pageSize: 8
             },
             tableData: [],
             multipleSelection: [],
@@ -120,25 +124,35 @@ export default {
             pageTotal: 0,
             form: {},
             idx: -1,
-            id: -1
+            id: -1,
+            loading:true,
+            allData:[]//储存所有请求过来的数组，页码作为数组索引，储存值是一个数组
+
         };
     },
-    created() {
-        this.getData();
+    beforeCreate() {
+        this.$nextTick( function () {
+            this.getData();
+            
+        });
     },
     methods: {
-        // 获取 easy-mock 的模拟数据
+        // 获取数据
         getData() {
-            fetchData(this.query).then(res => {
-                console.log(res);
-                this.tableData = res.list;
-                this.pageTotal = res.pageTotal || 50;
+            console.log(this.allData[this.query.pageIndex]);
+            
+            if( this.allData[this.query.pageIndex] ) return this.tableData = this.allData[this.query.pageIndex];
+            articalApi('getArtical',{skipNum:this.query.pageIndex}).then(res =>{
+                    console.log(res);
+                    this.loading = false;
+                    this.allData[this.query.pageIndex] = res.listData;
+                    this.pageTotal = res.totalCount || 50;
+                    this.tableData = this.allData[this.query.pageIndex];
             });
         },
         // 触发搜索按钮
         handleSearch() {
-            this.$set(this.query, 'pageIndex', 1);
-            this.getData();
+            
         },
         // 删除操作
         handleDelete(index, row) {
@@ -146,31 +160,50 @@ export default {
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             })
-                .then(() => {
-                    this.$message.success('删除成功');
-                    this.tableData.splice(index, 1);
-                })
-                .catch(() => {});
+            .then(() => {
+                this.tableData.splice(index, 1);
+                articalApi('delArtical',[row._id]).then(res=>{
+                    if (res.code==1) {
+                        this.multipleSelection = [];
+                        this.$message.success('删除成功');
+                    }else{
+                        this.$message.error('删除失败，请重试！');
+                    }
+                });
+            })
+            .catch(() => {});
         },
         // 多选操作
         handleSelectionChange(val) {
             this.multipleSelection = val;
         },
         delAllSelection() {
-            const length = this.multipleSelection.length;
-            let str = '';
-            this.delList = this.delList.concat(this.multipleSelection);
-            for (let i = 0; i < length; i++) {
-                str += this.multipleSelection[i].name + ' ';
-            }
-            this.$message.error(`删除了${str}`);
-            this.multipleSelection = [];
+            let delList = [];
+            this.multipleSelection.forEach(item=>{
+                delList.push(item._id);
+            })
+            this.loading = true;
+            //过滤掉没有被选中的
+            this.tableData = this.tableData.filter( item=> delList.indexOf(item._id) == -1 );
+            
+            articalApi('delArtical',delList).then(res=>{
+                this.loading = false;
+                if (res.code==1) {
+                    this.multipleSelection = [];
+                    this.$message.success('批量删除成功');
+                }else{
+                    this.$message.error('批量删除失败，请重试！');
+                }
+            });
         },
         // 编辑操作
         handleEdit(index, row) {
             this.idx = index;
             this.form = row;
-            this.editVisible = true;
+            // this.editVisible = true;
+            this.$router.push('./editor');
+            myStore.setArticalDataAction(row);
+            bus.$emit('edit',row);
         },
         // 保存编辑
         saveEdit() {
@@ -180,9 +213,32 @@ export default {
         },
         // 分页导航
         handlePageChange(val) {
+            console.log(val);
             this.$set(this.query, 'pageIndex', val);
             this.getData();
-        }
+        },
+        //更改文章状态 data参数可选，如果传递了，则是修改单条列表
+        changAtricalStatus(data){
+            
+            this.loading = true;
+            let tmpData = data ? data : [];
+
+            if (  Array.isArray(tmpData) ) {
+                this.multipleSelection.forEach(item=>{
+                    item.status = !item.status;
+                    tmpData.push({_id:item._id,status:item.status});
+                });
+            }else{
+                tmpData.status = !tmpData.status;
+            }
+            
+            //提交更改数据
+            articalApi('upDateArtical',tmpData).then(res=>{
+                this.loading = false;
+                res.code == 1 && this.$message.success('修改成功');
+                res.code == 0 && this.$message.error('修改失败，请重试！');
+            });
+        },
     }
 };
 </script>

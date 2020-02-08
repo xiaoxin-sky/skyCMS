@@ -17,9 +17,9 @@ class Category {
         }
     }
     async getCategoryDataList(ctx){
-        let categoryListData = await db.findPaging('categorys');
-        // console.log(categoryListData);
-        ctx.body = categoryListData;
+        let categoryData = await db.find('categorys');
+        
+        ctx.body = {code:'1','categoryData':categoryData};
         
         
     }
@@ -32,7 +32,7 @@ class Category {
         console.log(res);
     }
     /**
-     * 添加一条分类
+     * 添加一条一级分类
      * @param {object}} ctx 
      */
     async addCategory(ctx){
@@ -52,6 +52,15 @@ class Category {
             ctx.body = {'code':1,'msg':'修改成功'};
         }else{
             ctx.body = {'code':0,'msg':'修改失败'};
+        }
+    }
+    async delTopCategory(ctx){
+        let data = ctx.request.body;
+        let ret = await db.deleteMany('categorys',data);
+        if(ret.result.ok==1){
+            ctx.body = {'code':1,'msg':'删除成功'};
+        }else{
+            ctx.body = {'code':0,'msg':'删除失败'};
         }
     }
 }

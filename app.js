@@ -8,13 +8,25 @@ const cors = require('koa2-cors');
 const jwt = require('jsonwebtoken');
 const koaJwt = require('koa-jwt');
 const tokenSecret = require('./model/config').tokenSecret;
+const seoMiddleware = require('koa-seo');
 
 const app = new Koa();
 //跨域配置
-app.use(cors());
+app.use(cors({
+  origin: (ctx) => {
+    const origin = ctx.headers.origin  // 实际生产请根据具体情况来进行规则配置
+    return origin
+ },
+ credentials: true
+}));
 //配置post请求解析模块
 app.use(koaBody());
-
+app.use(seoMiddleware({
+  render: {
+      // use `window.isPageReady=1` to notify chrome-render page has ready
+      useReady: true,
+  }
+}));
 
 app.use(async (ctx,next)=>{
   ctx.state.__HOST__ = 'http://'+ctx.header.host;
@@ -22,6 +34,7 @@ app.use(async (ctx,next)=>{
 })
 
 app.use(function(ctx, next){
+  
   return next().catch((err) => {
       if (401 == err.status) {
           ctx.status = 401;
@@ -32,7 +45,7 @@ app.use(function(ctx, next){
   });
 });
 app.use(koaJwt({secret:tokenSecret}).unless({
-  path:[/\/login/]
+  path:[/login/,/^\/api/]
 }));
 
 // 开启路由
@@ -52,7 +65,7 @@ app.use(static(__dirname+'/public/'));
 app.on('error', async (err, ctx, next) => {
 
   // TODO logger errStack
-  console.log('全局捕获错误信息：'+err.message);
+  console.log('全局捕获错误信息：'+err);
 
   let errStruct = {
       errCode: -20221,

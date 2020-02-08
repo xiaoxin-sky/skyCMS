@@ -15,19 +15,25 @@ class Tools {
       });
     });
   }
+  /**
+   * 检测控制器类文件是否存在，存在返回物理绝对路径，否则直接抛出错误
+   * @param {Object} ctx 上下文对象 
+   * @param {*} path 控制器类文件相对地址
+   */
   controllerExit(ctx,path){
     return new Promise((resolve,reject)=>{
-      fs.access(this.getControllerPath(path), fs.constants.F_OK, (err) => {
+      let absolutePath = this.getControllerPath(path) ;
+      fs.access(absolutePath, fs.constants.F_OK, (err) => {
         if(err){
           console.log(this.getControllerPath(path)+'控制器文件不存在');
           reject(err);
         } 
-        resolve(true);
+        resolve(absolutePath);
       });
     });
   }
   /**
-   * 获取控制器绝对路径
+   * 相对路径转换为控制器绝对路径
    * @param {string} path 相对路径参数
    */
   getControllerPath(path){

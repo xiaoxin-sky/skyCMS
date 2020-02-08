@@ -2,7 +2,7 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb class="container" separator="/">
-                <el-breadcrumb-item><i class="el-icon-lx-calendar"></i> 表单</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-lx-calendar"></i> 新增文章</el-breadcrumb-item>
                 <el-breadcrumb-item>markdown编辑器</el-breadcrumb-item>
             </el-breadcrumb>
         </div>

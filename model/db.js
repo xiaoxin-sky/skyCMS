@@ -37,11 +37,11 @@ class Db {
     return new Promise(async (resolve,reject)=>{
       let connect = await this.connect();
       if(count){
-        var resulte = connect.collection(collentionName).find(json).count();
+        let resulte = connect.collection(collentionName).find(json).count();
         if(resulte.error)return reject(resulte.error);
         resolve(resulte);
       }else{
-        var resulte = connect.collection(collentionName).find(json);
+        let resulte =await connect.collection(collentionName).find(json);
         resulte.toArray((err,docs)=>{
           if(err){
             return reject(err);
@@ -56,31 +56,36 @@ class Db {
   /**
    * 分页查找
    * @param {obj} collentionName 集合名字
-   * @param {jsonObj} json 查询条件
    * @param {number} skipNum 跳过的个数
    * @param {number} initPaging 分页大小
+   * @param {jsonObj} json 查询条件
    * @param {jsonObj} sort 排序方式
    */
-  findPaging(collentionName,json={},skipNum=1,initPaging=5,sort){
+  findPaging(collentionName,skipNum=1,initPaging=5,json={},sort){
     return new Promise(async (resolve,reject)=>{
       let connect = await this.connect();
       /* let skipNum = skipNum||0;//默认跳过数量
       let initPaging = initPaging||10;//默认分页数量 */
       // connect.collection(collentionName).deleteMany();
+      let count,resulte;
       skipNum = skipNum-1;
       if(sort){
-        var resulte = connect.collection(collentionName).find(json).sort(sort).skip(skipNum*initPaging).limit(initPaging);
+        resulte = connect.collection(collentionName).find(json).sort(sort).skip(skipNum*initPaging).limit(initPaging);
       }else{
-        var resulte = connect.collection(collentionName).find(json).skip(skipNum).limit(initPaging);
+        resulte = connect.collection(collentionName).find(json).skip(skipNum).limit (Number(initPaging) );
       }
+      count = await connect.collection(collentionName).find(json).count();
+      
       resulte.toArray((err,docs)=>{
         if(err){
           return reject(err);
         }
-        resolve(docs);
+        
+        resolve({listData:docs,totalCount:count});
       })
     })
   }
+  
   findCount(collentionName,query){
     return new Promise(async (resolve,reject)=>{
       let db = await this.connect();
@@ -120,15 +125,45 @@ class Db {
       resolve(res);
     });
   }
-  upDateupOne(collentionName,json){
+  /**
+   * 更新一条数据，参数不传，默认更新全部数据，传递参数，则使用自定义更新,则需要手动写$set操作符
+   * @param {string} collentionName 
+   * @param {jsonObj} query 
+   * @param {jsonObj} update 
+   */
+  upDateupOne(collentionName,query,update){
     return new Promise(async (resolve,reject)=>{
       let db = await this.connect();
-      let res = db.collection(collentionName).updateOne({'_id':json['_id']},{$set:json});
+      let res;
+      if(update){
+        res = db.collection(collentionName).updateOne({'_id':query['_id']},update);
+      }else{
+        res = db.collection(collentionName).updateOne({'_id':query['_id']},{$set:query});
+      }
       if(res.error)reject(res.error);
       resolve(res);
     })
   }
-
+  /**
+   * 根据id 批量修改不同字段
+   * @param {string} collentionName 
+   * @param {json} query 查询条件
+   * @param {object} json 批量修改的数据集合
+   */
+  upDateMany(collentionName,query={},json){
+    return new Promise(async (resolve,reject)=>{
+      let db = await this.connect();
+      try {
+        db.collection(collentionName).find(query).forEach(item=>{
+          json.forEach(async data=> data._id == item._id && await db.collection(collentionName).updateOne({'_id':data._id},{$set:data}) );
+        });
+        resolve({ok:1});
+      } catch (error) {
+        reject(res.error)
+      }
+      
+    })
+  }
 }
 
 function getNextSequenceValue(sequenceName,db){

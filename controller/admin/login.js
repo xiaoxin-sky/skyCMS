@@ -2,7 +2,6 @@ const tools = require(process.cwd()+'/model/tools');
 const db = require(process.cwd()+'/model/db');
 const tokenSecret = require(process.cwd()+'/model/config').tokenSecret;
 const jwt = require('jsonwebtoken');
-
 class Login  {
   //constructor用于每次执行时候过滤东西
   constructor(ctx,method){
@@ -30,10 +29,11 @@ class Login  {
   }
   async dologin(ctx){
     var userInfo = ctx.request.query;
+    
     if(userInfo){
       var res = await db.find('user',{user_name:userInfo.username,password:userInfo.password});
       if(res.length>0){
-        const token = jwt.sign({iss:'skyCms',user_name:userInfo.username},tokenSecret,{expiresIn:'4h'});
+        const token = jwt.sign({iss:'skyCms',user_name:userInfo.username},tokenSecret,{expiresIn:'5h'});
         ctx.body = {'code':1,'msg':'登录成功','token':token};
       }else{
         ctx.body = {'code':0,'msg':'账号或者密码错误'};

@@ -14,6 +14,7 @@
             </div>
         </div>
     </div>
+    
 </template>
 
 <script>
@@ -46,6 +47,16 @@ export default {
             }
             this.tagsList = arr;
         });
+    },
+    mounted(){
+        bus.$on('tokenInvalid',()=>{
+            this.$router.push('/login');
+        });
+    },
+    methods:{
+        toLogin(){
+
+        }
     }
 };
 </script>
