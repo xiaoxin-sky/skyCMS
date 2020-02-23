@@ -9,7 +9,8 @@ import axios from "axios";
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 let config = {
-  baseURL: 'http://api.9cka.cn/api/',
+  // baseURL: 'http://api.9cka.cn/api/',
+  baseURL: 'http://localhost:3000/api/',
   withCredentials:true
   // timeout: 60 * 1000, // Timeout
   // withCredentials: true, // Check cross-site Access-Control

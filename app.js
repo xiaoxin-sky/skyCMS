@@ -8,9 +8,22 @@ const cors = require('koa2-cors');
 const jwt = require('jsonwebtoken');
 const koaJwt = require('koa-jwt');
 const tokenSecret = require('./model/config').tokenSecret;
-const seoMiddleware = require('koa-seo');
+const compress = require('koa-compress');
+
 
 const app = new Koa();
+//gzip配置
+app.use(compress({
+  filter: function (content_type) {
+  	return /text/i.test(content_type)
+  },
+  threshold: 2048,
+  flush: require('zlib').Z_SYNC_FLUSH
+}))
+app.use(async (ctx,next)=>{
+  ctx.cookies = true;
+  await next();
+})
 //跨域配置
 app.use(cors({
   origin: (ctx) => {
@@ -21,12 +34,6 @@ app.use(cors({
 }));
 //配置post请求解析模块
 app.use(koaBody());
-app.use(seoMiddleware({
-  render: {
-      // use `window.isPageReady=1` to notify chrome-render page has ready
-      useReady: true,
-  }
-}));
 
 app.use(async (ctx,next)=>{
   ctx.state.__HOST__ = 'http://'+ctx.header.host;

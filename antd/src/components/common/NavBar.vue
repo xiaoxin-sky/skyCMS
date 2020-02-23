@@ -7,12 +7,12 @@
           <a-sub-menu :key="item._id">
             <span slot="title" class="submenu-title-wrapper">{{item.cate_name}}</span>
             <template v-for="child in item.children">
-              <a-menu-item :key="child._id" @click="clickMenu(child)"><router-link :to="'./'+child.cate_path"> {{child.cate_name}} </router-link></a-menu-item>
+              <a-menu-item :key="child._id" @click="clickMenu(child)"><router-link :to="'/'+child.cate_path"> {{child.cate_name}} </router-link></a-menu-item>
             </template>
           </a-sub-menu>     
         </template>
         <template v-else>
-          <a-menu-item :key="item._id" @click="clickMenu(item)"><router-link :to="'./'+item.cate_path">{{item.cate_name}}</router-link></a-menu-item>
+          <a-menu-item :key="item._id" @click="clickMenu(item)"><router-link :to="'/'+item.cate_path">{{item.cate_name}}</router-link></a-menu-item>
         </template>
       </template>
     </a-menu>

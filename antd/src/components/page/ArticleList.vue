@@ -3,7 +3,7 @@
     
     <a-list-item  slot="renderItem" slot-scope="item" key="item.title">
       <template slot="extra">
-        <a  :href="routerPatha(item)" class="imgWarp">
+        <a @click="enterArticel(item)" :href="routerPatha(item)" class="imgWarp">
           <img
           :alt="item.title"
           :src="getFirstImgPath(item.content)" />
@@ -11,7 +11,7 @@
       </template>
       <a-list-item-meta >  
         <span slot="title" >
-          <a :href="routerPatha(item)" :style="{color:item.titlecolor}">{{item.title}}</a>
+          <a @click="enterArticel(item)" :href="routerPatha(item)" :style="{color:item.titlecolor}">{{item.title}}</a>
         </span>  
       </a-list-item-meta>
       <article >  {{delHtmlTag(item.content)}}</article>
@@ -93,10 +93,10 @@
       // })
     },
     methods:{
-      // enterArticel(item){
-      //   this.$router.push(`/${item.cate_path}/${item._id}`);
-      //   bus.$emit('sendArtData',item);
-      // },
+      enterArticel(item){
+        // this.$router.push(`/${item.cate_path}/${item._id}`);
+        bus.$emit('sendArtData',item);
+      },
       delHtmlTag(str){
         let noTagStr = str.replace(/<[^>]+>/g,"").slice(0,160);//先过滤掉标签，然后再截取120个字。
         noTagStr = noTagStr.length < 160 ?  noTagStr : noTagStr+'...';
