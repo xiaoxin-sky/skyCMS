@@ -57,7 +57,10 @@
     "vary": "^1.1.2",
     "ylru": "^1.2.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"

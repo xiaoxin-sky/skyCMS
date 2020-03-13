@@ -201,7 +201,7 @@ export default {
             this.idx = index;
             this.form = row;
             // this.editVisible = true;
-            this.$router.push('./editor');
+            this.$router.push('./markdown');
             myStore.setArticalDataAction(row);
             bus.$emit('edit',row);
         },
