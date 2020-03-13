@@ -4,6 +4,7 @@ router.get('*',async (ctx,next)=>{
     await next();
 });
 router.post('*',async (ctx,next)=>{
+    
     await next();
 });
 

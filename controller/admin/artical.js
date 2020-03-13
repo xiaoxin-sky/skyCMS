@@ -1,7 +1,7 @@
 let db = require(process.cwd()+'/model/db');
 let jwt = require('jsonwebtoken');
 let tokenSecret = require(process.cwd()+'/model/config').tokenSecret;
-
+let uploadImg = require(process.cwd()+'/model/uploadImg');
 
 class Artical {
     constructor(ctx,method){
@@ -85,6 +85,12 @@ class Artical {
         }else{
             ctx.body = {'code':0,'msg':'删除失败'};
         }
+        
+    }
+    async uploadImg(ctx){
+        let imgUrl = await uploadImg(ctx);
+        ctx.status = 200;
+        ctx.body = {'code':1,imgUrl:ctx.state.__HOST__+imgUrl};
         
     }
 }

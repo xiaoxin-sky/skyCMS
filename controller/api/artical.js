@@ -20,7 +20,8 @@ class Artical {
       skipNum = queryParams.skipNum || 1 ;
       initPaging = Number(queryParams.initPaging) || 8;
       category = queryParams.category ;
-      if(queryParams.category == 'index'){
+      if(category == 'index'){
+        //分开写是因为搜索的时候要
          ret = await db.findPaging('articals',skipNum,initPaging,{ status:{$in:[true]}},{'_id':-1}  );
       }else{
          ret = await db.findPaging('articals',skipNum,initPaging,{ status:{$in:[true]},cate_path:{$in:[category]}},{'_id':-1}  );

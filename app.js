@@ -33,12 +33,19 @@ app.use(cors({
  credentials: true
 }));
 //配置post请求解析模块
-app.use(koaBody());
+app.use(koaBody({
+  multipart:true,
+  formidable:{
+    maxFieldsSize:2 * 1024 * 1024
+  }
+}));
 
 app.use(async (ctx,next)=>{
   ctx.state.__HOST__ = 'http://'+ctx.header.host;
   await next();
 })
+//配置静态资源
+app.use(static('./public'));
 
 app.use(function(ctx, next){
   
@@ -66,8 +73,7 @@ render(app, {
   debug: process.env.NODE_ENV !== 'production'
 });
 
-//配置静态资源
-app.use(static(__dirname+'/public/'));
+
 //全局错误捕获
 app.on('error', async (err, ctx, next) => {
 

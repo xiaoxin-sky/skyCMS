@@ -41,6 +41,14 @@ class Artical{
             data:this.query
         });
     }
+    uploadImg(){
+        return request({
+            url: './artical/uploadImg',
+            method: 'post',
+            headers: { 'Content-Type': 'multipart/form-data' },
+            data:this.query
+        });
+    }
 }
 export default async function(apiName,query){
     let artical = new Artical(apiName,query);
