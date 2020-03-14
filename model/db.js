@@ -58,23 +58,32 @@ class Db {
    * @param {obj} collentionName 集合名字
    * @param {number} skipNum 跳过的个数
    * @param {number} initPaging 分页大小
-   * @param {jsonObj} json 查询条件
+   * @param {Object} find 查询条件 两种形式 1：只查询，不排除，直接传查询条件  {  field1 ： < value > ， field2 ： < value >  ...  } ； 2：查询，并且需要排除返回字段，需要传数组对象，数组第一个是query对象，第二个是projection对象 [{  field1 ： < value > ， field2 ： < value >  ...  },{  field1 ： < value > ， field2 ： < value >  ...  }]
    * @param {jsonObj} sort 排序方式
    */
-  findPaging(collentionName,skipNum=1,initPaging=5,json={},sort){
+  findPaging(collentionName,skipNum=1,initPaging=5,find={},sort){
     return new Promise(async (resolve,reject)=>{
       let connect = await this.connect();
       /* let skipNum = skipNum||0;//默认跳过数量
       let initPaging = initPaging||10;//默认分页数量 */
       // connect.collection(collentionName).deleteMany();
-      let count,resulte;
+      let count,resulte,query,projection;
       skipNum = skipNum-1;
-      if(sort){
-        resulte = connect.collection(collentionName).find(json).sort(sort).skip(skipNum*initPaging).limit(initPaging);
+      
+      if(Array.isArray(find)){
+        query = find[0] ;
+        projection = find[1];
       }else{
-        resulte = connect.collection(collentionName).find(json).skip(skipNum).limit (Number(initPaging) );
+        query = find;
+        projection ={};
       }
-      count = await connect.collection(collentionName).find(json).count();
+      //这里有个坑，shell中的find需要个参数 query 和projection ，但是node中 find和project是分开的。
+      if(sort){
+        resulte = connect.collection(collentionName).find(query).project(projection).sort(sort).skip(skipNum*initPaging).limit(initPaging);
+      }else{
+        resulte = connect.collection(collentionName).find(query).project(projection).skip(skipNum).limit (Number(initPaging) );
+      }
+      count = await connect.collection(collentionName).find(query).count();
       
       resulte.toArray((err,docs)=>{
         if(err){

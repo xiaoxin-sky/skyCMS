@@ -20,10 +20,10 @@ app.use(compress({
   threshold: 2048,
   flush: require('zlib').Z_SYNC_FLUSH
 }))
-app.use(async (ctx,next)=>{
+/* app.use(async (ctx,next)=>{
   ctx.cookies = true;
   await next();
-})
+}) */
 //跨域配置
 app.use(cors({
   origin: (ctx) => {

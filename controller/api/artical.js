@@ -21,10 +21,10 @@ class Artical {
       initPaging = Number(queryParams.initPaging) || 8;
       category = queryParams.category ;
       if(category == 'index'){
-        //分开写是因为搜索的时候要
-         ret = await db.findPaging('articals',skipNum,initPaging,{ status:{$in:[true]}},{'_id':-1}  );
+        //分开写是因为搜索的时候如是首页，则不需要分类
+         ret = await db.findPaging('articals',skipNum,initPaging,[{ status:{$in:[true]}},{content:0,markdownContent:0 }],{'_id':-1}  );
       }else{
-         ret = await db.findPaging('articals',skipNum,initPaging,{ status:{$in:[true]},cate_path:{$in:[category]}},{'_id':-1}  );
+         ret = await db.findPaging('articals',skipNum,initPaging,[{ status:{$in:[true]},cate_path:{$in:[category]}} ,{content:0,markdownContent:0 }],{'_id':-1}  );
       }
       if(ret){
         this.ctx.body = {'code':200,'data':ret};
@@ -40,7 +40,6 @@ class Artical {
       await db.upDateupOne('articals',{'_id':Number( artId )},{$inc:{views:1}});
       
       let artData =await db.find('articals',{_id:Number( artId )});
-      db.find('articals',{_id:Number( artId )});
       if(artData){
         this.ctx.body = {'code':200,'data':artData};
       }else{

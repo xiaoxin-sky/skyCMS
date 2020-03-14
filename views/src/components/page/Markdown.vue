@@ -16,14 +16,26 @@
                 @change="change"
                 style="min-height: 200px"
             />
-
-            <el-input
-                type="textarea"
-                class="summary"
-                :rows="2"
-                placeholder="请输入内容"
-                v-model="summary"
-            ></el-input>
+            <div class="listSummary">
+                
+                <el-upload
+                class="avatar-uploader"
+                :action="action"
+                :headers="{ 'Content-Type': 'multipart/form-data' }"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess" >
+                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+                <el-input
+                    type="textarea"
+                    class="summary"
+                    :rows="6"
+                    placeholder="请填写文章概述"
+                    v-model="summary"
+                ></el-input>
+                
+            </div>
 
             <div class="submitBlock">
                 文章分类:
@@ -72,15 +84,15 @@ import categoryApi from '../../api/category';
 import articalApi from '../../api/artical';
 import bus from '../common/bus';
 import myStore from '../../store/articalStore.js';
-
 export default {
     name: 'markdown',
     data: function() {
         return {
+            action:'http://localhost:3000/admin/artical/uploadImg',
             content: '',
             html: '',
-            summary:'请填写文章概述',
-            configs: {},
+            imageUrl: '',//文章列表显示的图片
+            summary: '',//文章列表显示的文章概述
             title: null,
             titlecolor: '#000000',
             options: null,
@@ -112,39 +124,30 @@ export default {
     created: function() {
         //如果store里面不为空,则自动填写信息
         myStore.state.articalData && this.setData(myStore.state.articalData);
+        
     },
     mounted() {
         bus.$on('edit', json => {
-            console.log(json);
-            
             this.setData(json);
         });
     },
     methods: {
+        handleAvatarSuccess(res, file) {
+         this.imageUrl = URL.createObjectURL(file.raw);
+        },
         // 将图片上传到服务器，返回地址替换到md中
         $imgAdd(pos, $file) {
-            console.log('$file',$file);
-            
             var formdata = new FormData();
             formdata.append('file', $file);
-            articalApi('uploadImg',formdata).then(ret=>{
+            articalApi('uploadImg', formdata).then(ret => {
                 console.log(ret);
-                if(ret.code==1){
+                if (ret.code == 1) {
                     this.$refs.md.$img2Url(pos, ret.imgUrl);
-                }else{
+                    //添加文章列表首张图
+                } else {
                     this.$message.error('从服务器获取图片失败');
                 }
             });
-            // 这里没有服务器供大家尝试，可将下面上传接口替换为你自己的服务器接口
-            /* this.$axios({
-                url: '/common/upload',
-                method: 'post',
-                data: formdata,
-                headers: { 'Content-Type': 'multipart/form-data' }
-            }).then(url => {
-                this.$refs.md.$img2Url(pos, url);
-            }); */
-            
         },
         delHtmlTag(html) {
             let noTagStr = html.replace(/<[^>]+>/g, '').slice(0, 160); //先过滤掉标签，然后再截取120个字。
@@ -158,14 +161,12 @@ export default {
                 var objE = document.createElement('div');
                 objE.innerHTML = imgTag;
                 return objE.childNodes[0].src;
-            } else {
-                return require('@/assets/img/mypic.png'); //加上require即可
             }
         },
         change(value, render) {
             // render 为 markdown 解析后的结果
-            console.log('render',render);
-            
+            console.log('render', render);
+            this.imageUrl = this.getFirstImgPath(render);
             this.summary = this.delHtmlTag(render);
             this.html = render;
         },
@@ -179,15 +180,13 @@ export default {
 
             let keys = Object.keys(json);
             keys.forEach(item => {
-                
-                if(item == "content"){
+                if (item == 'content') {
                     this[item] = json['markdownContent'];
                     this.editData[item] = json['markdownContent'];
-                }else{
+                } else {
                     this[item] = json[item];
                     this.editData[item] = json[item];
                 }
-                
             });
         },
         submit() {
@@ -196,8 +195,9 @@ export default {
             let articalData = {
                 content: this.html,
                 title: this.title,
-                summary:this.summary,
-                markdownContent:this.content,
+                imageUrl:this.imageUrl,
+                summary: this.summary,
+                markdownContent: this.content,
                 titlecolor: this.titlecolor,
                 cate_id: this.cate_id,
                 cate_name: this.cate_name,
@@ -254,7 +254,54 @@ export default {
 .submitBlock .color-picker {
     vertical-align: middle;
 }
-.summary {
-    margin-top: 20px;
+.listSummary{
+    margin-top: 10px;
+    display: flex;
 }
+.listSummary .summary {
+    top: 5px;
+}
+.listSummary .upload {
+    display: inline;
+}
+
+.avatar-uploader{
+    display: inline-block;
+    margin-right: 20px;
+}
+ .avatar-uploader >>> .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    width: 218px;
+    height: 134px;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 134px;
+    height: 134px;
+    line-height: 134px;
+    text-align: center;
+  }
+  .avatar-uploader-icon::after{
+      content: '请添加一张文章列表默认图片';
+      font-size: 12px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    height: 0;
+      top: 30px;
+  }
+  .avatar {
+      margin: 0 auto;
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+  }
 </style>
