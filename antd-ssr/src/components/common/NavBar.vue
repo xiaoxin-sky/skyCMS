@@ -22,7 +22,7 @@
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import bus from '@/components/common/bus.js'
 export default {
   data() {
     return {
@@ -40,6 +40,7 @@ export default {
         category.cate_path == "index"
           ? title
           : category.cate_name + "-" + title;
+      bus.$emit('initCurrent');
     }
   }
 };

@@ -44,6 +44,7 @@
   </div>
 </template>
 <script>
+import bus from '@/components/common/bus.js'
 import { mapState } from "vuex";
 export default {
   asyncData({ store, route }) {
@@ -59,12 +60,17 @@ export default {
   data() {
     return {
       defaultPageSize: 4,
-      current: 1
+      current:1//页码初始化，是从导航传递过来的变化，因此用store不方便，使用bus最合适
     };
+  },
+  created(){
+    bus.$on('initCurrent',()=>{
+      this.current = 1;
+    });
   },
   methods: {
     onChange(current) {
-      let arrPageNum = current-1;
+      let arrPageNum = current - 1;
       if (this.allListData[arrPageNum]) {
         //如果点击的页数，已经存在store里面，不再请求获取。直接拿出来用
         this.$store.commit("changeArtList", arrPageNum);
@@ -82,7 +88,6 @@ export default {
   },
   computed: {
     routerPath() {
-      this.current = 1;
       return item => `./${item.cate_path}/${item._id}`;
     },
     ...mapState({

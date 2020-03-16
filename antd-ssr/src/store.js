@@ -12,11 +12,11 @@ export function createStore() {
             },
             artDetail:{
                 content:'<h1 style="text-align:center;margin-top: 10%;">文章不存在!</h1>'
-            }
+            },
         },
         mutations: {
+            //重新获取分类列表
             setArtList(state, {listData,totalCount}) {
-                // 是同一个分类发起的请求，则需要把数据合并起来。而不是全部替换
                 let allData =[listData];
                 Vue.set(state, 'articleList',{
                     listData,
@@ -24,16 +24,20 @@ export function createStore() {
                     allData
                 });
             },
-            //添加列表内某一页数据
+            //新增列表内某一页数据
             addPagenationList(state,{listData , totalCount}){
+                 // 是同一个分类发起的请求，则需要把数据合并起来。而不是全部替换
                 let allData = state.articleList.allData.concat([listData]);
-                console.log(allData);
-                
                 Vue.set(state, 'articleList', {
                     listData,
                     totalCount,
                     allData
                 });
+            },
+            //切换为缓存数据
+            changeArtList(state,pageNum){
+                let articleList = state.articleList;
+                Vue.set(articleList,'listData',articleList.allData[pageNum]);
             },
             setNavBar(state, data) {
                 Vue.set(state, 'navBarData', data);
@@ -43,14 +47,12 @@ export function createStore() {
             },
             setCategory(state,category){
                 Vue.set(state,'category',category);
-            },
-            changeArtList(state,arrPageNum){
-                //把渲染列表所用的数据源，切换成allData中对应页码的数据源
-                Vue.set(state.articleList,'listData',state.articleList.allData[arrPageNum]);
             }
         },
         actions: {
-            async navBar({ commit }) {
+            async navBar({ commit,state }) {
+                //如果导航已经过，不在进行获取
+                if(state.navBarData.length>0)return;
                 let res = await (Vue.axios.get('navbar/getNavList'));
                 commit('setNavBar', res.data);
             },
