@@ -1,5 +1,4 @@
 const path = require('path');
-// const HtmlWebpackPlugin = require('html-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
@@ -34,7 +33,6 @@ module.exports = {
         ]
     },
     plugins: [
-        // new HtmlWebpackPlugin(),
         new VueLoaderPlugin(),
         new FriendlyErrorsWebpackPlugin(),
         new ProgressBarPlugin({

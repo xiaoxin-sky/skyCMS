@@ -12,7 +12,6 @@
       <a-layout-content :style="{ margin: '84px auto', width: '1200px' }">
         <a-row :gutter="16">
           <a-col :span="18" class="gutter-box">
-            <!-- <s-content :category="category" :article="article"></s-content> -->
             <div :style="{ background: '#fff', padding: '24px', minHeight: '380px' }">
               <router-view></router-view>
             </div>
@@ -29,7 +28,6 @@
 
 <script>
 import NavBar from "../common/NavBar.vue";
-// import sContent from "../common/Content.vue";
 import sListBar from "../common/ListBar.vue";
 export default {
   asyncData({ store, route }) {
