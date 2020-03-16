@@ -62,7 +62,7 @@
     "webpack-cli": "^3.3.11"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node app.js",
     "start": "node app.js"
   },
   "author": "skybk",
