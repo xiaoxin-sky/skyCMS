@@ -35,8 +35,7 @@ export default {
   },
   components: {
     NavBar,
-    // sContent,
-    sListBar
+    sListBar,
   },
   data() {
     return {
@@ -80,9 +79,5 @@ export default {
 .navbox {
   width: 1200px;
   margin: auto;
-}
-.logo {
-}
-.gutter-box {
 }
 </style>

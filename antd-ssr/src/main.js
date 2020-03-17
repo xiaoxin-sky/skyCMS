@@ -5,11 +5,8 @@ import { createStore } from './store';
 import { sync } from 'vuex-router-sync'
 import Antd from 'ant-design-vue';
 import axios from "./plugins/axios";
-
-// import { VueEditor } from "vue2-editor";
 Vue.use(Antd);
 Vue.use(axios);
-// Vue.use(VueEditor);
 export default function createApp() {
     const router = createRouter();
     const store = createStore();

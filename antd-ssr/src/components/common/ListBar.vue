@@ -3,7 +3,7 @@
     <div class="sky-plug">
       <a-row type="flex" justify="center" align="top">
         <a-col>
-          <a-avatar :size="64" :src="require('@/assets/avatar.png').default" />
+          <a-avatar :size="64" :src="require('@/assets/imgs/avatar.jpg').default" />
         </a-col>
       </a-row>
       <a-row class="sky-sign" type="flex" justify="center" align="top">

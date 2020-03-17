@@ -45,7 +45,7 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style>
 .ant-menu-horizontal {
   line-height: 57px;
 }

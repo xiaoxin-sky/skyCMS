@@ -8,7 +8,7 @@ export function createRouter() {
         routes: [
             {
                 path: '/',
-                component: () => import(/* webpackChunkName: "Index" */ '@/components/common/Index.vue').then(c=>c.default),
+                component: () => import(/* webpackChunkName: "Index" */ '@/components/common/Index.vue'),
                 meta: { title: '小新的个人博客网站' },
                 children:[
                     
