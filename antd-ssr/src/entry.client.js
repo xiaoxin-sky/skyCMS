@@ -20,7 +20,7 @@ if (window.__INITIAL_STATE__) {
     store.replaceState(window.__INITIAL_STATE__)
 }
 router.onReady(() => {
-
+    
     router.beforeResolve((to, from, next) => {
         const matched = router.getMatchedComponents(to)
         const prevMatched = router.getMatchedComponents(from)

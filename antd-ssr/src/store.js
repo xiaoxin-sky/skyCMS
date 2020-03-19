@@ -12,7 +12,7 @@ export function createStore() {
             },
             artDetail:{
                 content:'<h1 style="text-align:center;margin-top: 10%;">文章不存在!</h1>'
-            },
+            }
         },
         mutations: {
             //重新获取分类列表

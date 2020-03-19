@@ -3,5 +3,4 @@ var app = {
    dbName : 'bk-cms',
    tokenSecret : 'ILOVECHEN'
 }
-
 module.exports = app;

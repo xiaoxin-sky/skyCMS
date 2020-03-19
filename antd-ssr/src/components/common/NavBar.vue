@@ -36,10 +36,7 @@ export default {
 
       //点击导航菜单，动态变更title
       let title = this.$route.meta.title;
-      document.title =
-        category.cate_path == "index"
-          ? title
-          : category.cate_name + "-" + title;
+      document.title = category.cate_path == "index" ? title: category.cate_name + " | " + title;
       bus.$emit('initCurrent');
     }
   }

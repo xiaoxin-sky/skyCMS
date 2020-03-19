@@ -3,12 +3,12 @@
     <div class="sky-plug">
       <a-row type="flex" justify="center" align="top">
         <a-col>
-          <a-avatar :size="64" :src="require('@/assets/imgs/avatar.jpg').default" />
+          <a-avatar :size="64" :src="require('@/assets/imgs/avatar.jpg').default" alt="avatar" />
         </a-col>
       </a-row>
       <a-row class="sky-sign" type="flex" justify="center" align="top">
         <a-col>
-          <h3>Sky</h3>
+          <h3>Sky（小新）</h3>
           <p>
             <span>个人签名：</span>
             <span>提升能力，创造价值!</span>
@@ -30,7 +30,7 @@
         <a-col :span="8">
           <a-tooltip>
             <template slot="title">https://github.com/1912820899</template>
-            <a href="https://github.com/1912820899" target="_blank"><a-icon type="github" /></a>
+            <a href="https://github.com/1912820899" target="_blank" rel="noopener noreferrer"><a-icon type="github" /></a>
           </a-tooltip>
         </a-col>
         <a-col :span="8">

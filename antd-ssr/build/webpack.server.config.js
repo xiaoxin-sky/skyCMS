@@ -3,6 +3,7 @@ const path = require('path');
 const baseConfig = require('./webpack.base.config');
 const VueSSRServerPlugin = require('vue-server-renderer/server-plugin');
 const nodeExternals = require('webpack-node-externals')
+const webpack = require('webpack');
 module.exports = merge(baseConfig, {
     target: 'node',
     devtool: 'source-map',
@@ -24,6 +25,9 @@ module.exports = merge(baseConfig, {
         ]
     },
     plugins: [
-        new VueSSRServerPlugin()
+        new VueSSRServerPlugin(),
+        new webpack.DefinePlugin({
+            'process.env.VUE_ENV': '"server"'
+        })
     ]
 })

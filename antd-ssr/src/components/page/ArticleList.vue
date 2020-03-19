@@ -13,21 +13,20 @@
           </span>
         </a-list-item-meta>
         <article>{{item.summary}}</article>
-
-        <template slot="actions">
-          <span>
+        <template >
+          <span slot="actions">
             <a-icon type="schedule" />
             {{item.cate_name}}
           </span>
-          <span>
+          <span slot="actions">
             <a-icon type="clock-circle" />
             {{item.creat_time}}
           </span>
-          <span>
+          <span slot="actions">
             <a-icon type="like" />
             {{item.like}}
           </span>
-          <span>
+          <span slot="actions">
             <a-icon type="eye" />
             {{item.views}}
           </span>
@@ -46,6 +45,7 @@
 <script>
 import bus from '@/components/common/bus.js'
 import { mapState } from "vuex";
+import titleMixin from '@/util/mixin.js';
 export default {
   asyncData({ store, route }) {
     let category = (route.params && route.params.category) || "index";
@@ -57,10 +57,16 @@ export default {
     store.commit("setCategory", category);
     return store.dispatch("articleList", { params });
   },
+  mixins:[titleMixin],
+  title(){
+    let artDetail = this.listData[0];
+    return artDetail&&artDetail.cate_name;
+  },
   data() {
     return {
       defaultPageSize: 4,
-      current:1//页码初始化，是从导航传递过来的变化，因此用store不方便，使用bus最合适
+      current:1,//页码初始化，是从导航传递过来的变化，因此用store不方便，使用bus最合适
+      
     };
   },
   created(){

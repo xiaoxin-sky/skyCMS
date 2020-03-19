@@ -88,7 +88,7 @@ export default {
     name: 'markdown',
     data: function() {
         return {
-            action:'http://localhost:3000/admin/artical/uploadImg',
+            action:'http://api.9cka.cn/admin/artical/uploadImg',
             content: '',
             html: '',
             imageUrl: '',//文章列表显示的图片

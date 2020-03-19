@@ -34,10 +34,3 @@ export default (ctx) => {
     });
 
 }
-//递归调用一个组件（包含自组件）中的asyncData方法，并返回的promise数组
-// function getAllAsyncData(matchedComponents, option) {
-//     let arr = [];
-//     matchedComponents.
-//     return arr;
-
-// }

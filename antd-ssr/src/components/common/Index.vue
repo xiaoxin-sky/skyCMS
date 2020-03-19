@@ -21,7 +21,7 @@
           </a-col>
         </a-row>
       </a-layout-content>
-      <a-layout-footer :style="{ textAlign: 'center' }">SkyBk Design ©2020 Created by SkyBk 小新</a-layout-footer>
+      <a-layout-footer :style="{ textAlign: 'center' }">SkyCMS  Design ©2020 Created by 小新</a-layout-footer>
     </a-layout>
   </a-spin>
 </template>
@@ -46,14 +46,7 @@ export default {
   created() {
     // document.title = this.$route.meta.title;
   },
-  props: ["category", "article"],
-  methods: {
-    change(affixed) {
-      console.log(affixed);
-      // let a = affixed;
-      // console.log(a);
-    }
-  }
+  props: ["category", "article"]
 };
 </script>
 

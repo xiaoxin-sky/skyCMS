@@ -36,6 +36,8 @@
 </template>
 
 <script>
+import {mapState} from 'vuex';
+import titleMixin from '@/util/mixin.js';
 export default {
   asyncData({ store, route }) {
     let routerParams = route.params;
@@ -43,9 +45,14 @@ export default {
       return store.dispatch("articleDetail", { id: routerParams.article });
     }
   },
+  mixins:[titleMixin],
+  title(){
+    let artData = this.artData;
+    return artData&&artData.title;
+  },
   data(){
     return {
-      artData:this.$store.state.artDetail,
+      userlike:this.artData&&this.artData.like || 0,
       routes: [
         {
           path: '/',
@@ -62,12 +69,12 @@ export default {
     }
   },
   mounted(){
-    let title = this.$route.meta.title;
-    document.title = this.routes[2].breadcrumbName+'-'+title;
+    // let title = this.$route.meta.title;
+    // document.title = this.routes[2].breadcrumbName+'-'+title;
   },
   methods:{
     async like(){
-      let ret = await this.$axios.post('artical/addLick',{
+      let ret = await this.axios.post('artical/addLick',{
         'id':this.artData._id
       });
       this.$message.config({
@@ -76,7 +83,7 @@ export default {
         maxCount: 3,
       });
       if(ret.code==200){
-        this.artData.like = this.artData.like+1;
+        this.userlike = this.userlike+1;
         this.$message.success('感谢您的赞美！');
       }else if(ret.code==201){
         this.$message.warning('过多的赞美，会使我膨胀的哦！');
@@ -84,6 +91,11 @@ export default {
         this.$message.error('理解您想赞美我的心情，但是现在系统出错啦，请待会儿重试哦！');
       }
     }
+  },
+  computed:{
+    ...mapState({
+      artData:state=>state.artDetail
+    })
   }
 }
 </script>

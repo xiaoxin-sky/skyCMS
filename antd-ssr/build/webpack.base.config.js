@@ -6,6 +6,8 @@ const chalk = require('chalk');
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const webpack = require('webpack');
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
+
 module.exports = {
     output: {
         filename: '[name].[chunkhash].js',
@@ -13,7 +15,7 @@ module.exports = {
         publicPath: '/'
     },
     mode: 'production',
-    // stats: 'errors-only',
+    stats: 'errors-only',
     // devtool: 'inline-source-map',
     resolve: {
         alias: {

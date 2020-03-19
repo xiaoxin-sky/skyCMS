@@ -5,6 +5,7 @@ const path = require('path');
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
 module.exports = merge(baseConfig, {
     entry: [path.resolve(__dirname, '../src/entry.client.js')],
     module: {
@@ -29,6 +30,9 @@ module.exports = merge(baseConfig, {
             filename: '[name].[chunkhash].css',
             chunkFilename: '[id].[chunkhash].css'
         }),
+        new webpack.DefinePlugin({
+            'process.env.VUE_ENV': '"client"'
+        })
 
 
     ],
