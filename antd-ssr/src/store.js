@@ -44,9 +44,6 @@ export function createStore() {
             },
             setArtDetail(state,data){
                 Vue.set(state,'artDetail',data);
-            },
-            setCategory(state,category){
-                Vue.set(state,'category',category);
             }
         },
         actions: {

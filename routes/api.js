@@ -9,6 +9,7 @@ router.post('*',async (ctx,next)=>{
 });
 
 router.use(async (ctx,next)=>{
+
     let pathArr = pathToArr(ctx);
     if(pathArr.length != 3 ) ctx.throw('api地址不正确');
 

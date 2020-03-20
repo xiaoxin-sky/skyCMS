@@ -45,7 +45,17 @@
 </template>
 
 <script>
-export default {};
+import { Row,Col,Tooltip,Divider,Icon,Avatar } from 'ant-design-vue';
+export default {
+  components:{
+    ARow:Row,
+    ACol:Col,
+    ATooltip:Tooltip,
+    ADivider:Divider,
+    AIcon:Icon,
+    AAvatar:Avatar
+  }
+};
 </script>
 
 <style  scoped>

@@ -35,6 +35,8 @@
     </a-list>
     <a-pagination
       class="pagination"
+      :hideOnSinglePage=true
+      :itemRender="itemRender"
       v-model="current"
       :defaultPageSize="defaultPageSize"
       :total="totalCount"
@@ -46,27 +48,19 @@
 import bus from '@/components/common/bus.js'
 import { mapState } from "vuex";
 import titleMixin from '@/util/mixin.js';
+import { List,Pagination,Icon } from 'ant-design-vue';
 export default {
-  asyncData({ store, route }) {
-    let category = (route.params && route.params.category) || "index";
-    let params = {
-      skipNum: 1,
-      initPaging: 4,
-      category: category
-    };
-    store.commit("setCategory", category);
-    return store.dispatch("articleList", { params });
-  },
-  mixins:[titleMixin],
-  title(){
-    let artDetail = this.listData[0];
-    return artDetail&&artDetail.cate_name;
+  components:{
+    AList:List,
+    AListItem:List.Item,
+    AListItemMeta:List.Item.Meta,
+    APagination:Pagination,
+    AIcon:Icon
   },
   data() {
     return {
       defaultPageSize: 4,
       current:1,//页码初始化，是从导航传递过来的变化，因此用store不方便，使用bus最合适
-      
     };
   },
   created(){
@@ -90,7 +84,19 @@ export default {
           }
         });
       }
-    }
+    },
+    itemRender(current, type, originalElement) {
+      
+        let route = this.$store.state.route;
+        let path = route.path == '/' ? '/index?page=' :`${route.path}?page=` ;
+        let prev = (this.current-1) == 0 ?  this.current : (this.current-1);
+        if (type === 'prev') {
+          return <router-link to={path+prev}>上一页</router-link>;
+        } else if (type === 'next') {
+          return <router-link to={path+(this.current+1)}>下一页</router-link>;
+        }
+        return originalElement;
+    },
   },
   computed: {
     routerPath() {
@@ -101,7 +107,25 @@ export default {
       totalCount: state => state.articleList.totalCount,
       allListData: state => state.articleList.allData
     })
-  }
+  },
+  asyncData({ store, route }) {
+    let skipNum = (route.query&&route.query.page) || 1;
+    let category = (route.params && route.params.category) || "index";
+    let params = {
+      skipNum: skipNum,
+      initPaging: 4,
+      category: category
+    };
+    return store.dispatch("articleList", { params });
+  },
+  mixins:[titleMixin],
+  title(){
+    let artDetail = this.listData[0];
+    let query = this.$store.state.route.query;
+    // 如果文章列表页码存在并且不是第一页，则给标题添加页码。
+    let page = query&&query.page&&query.page>1 ? `-第${query.page}页` : '';
+    return artDetail&&(artDetail.cate_name+page);
+  },
 };
 </script>
 <style>

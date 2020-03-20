@@ -16,6 +16,7 @@ class Artical {
   }
   async getArticalList(){
       let queryParams = this.ctx.query;
+      
       let skipNum,initPaging,category,ret;
       skipNum = queryParams.skipNum || 1 ;
       initPaging = Number(queryParams.initPaging) || 8;

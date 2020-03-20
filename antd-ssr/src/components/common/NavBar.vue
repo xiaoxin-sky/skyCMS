@@ -23,6 +23,7 @@
 </template>
 <script>
 import bus from '@/components/common/bus.js'
+import { Menu } from 'ant-design-vue';
 export default {
   data() {
     return {
@@ -33,12 +34,16 @@ export default {
   },
   methods: {
     clickMenu(category) {
-
       //点击导航菜单，动态变更title
       let title = this.$route.meta.title;
       document.title = category.cate_path == "index" ? title: category.cate_name + " | " + title;
       bus.$emit('initCurrent');
     }
+  },
+  components:{
+    AMenu:Menu,
+    AMenuItem:Menu.Item,
+    ASubMenu:Menu.SubMenu
   }
 };
 </script>

@@ -12,7 +12,7 @@
       <a-layout-content :style="{ margin: '84px auto', width: '1200px' }">
         <a-row :gutter="16">
           <a-col :span="18" class="gutter-box">
-            <div :style="{ background: '#fff', padding: '24px', minHeight: '380px' }">
+            <div :style="{ background: '#fff', padding: '24px', minHeight: '290px' }">
               <router-view></router-view>
             </div>
           </a-col>
@@ -29,6 +29,7 @@
 <script>
 import NavBar from "../common/NavBar.vue";
 import sListBar from "../common/ListBar.vue";
+import { Spin , Layout,Row,Col } from 'ant-design-vue';
 export default {
   asyncData({ store, route }) {
     return store.dispatch("navBar");
@@ -36,6 +37,13 @@ export default {
   components: {
     NavBar,
     sListBar,
+    ASpin:Spin,
+    ALayout:Layout,
+    ALayoutHeader:Layout.Header,
+    ALayoutContent:Layout.Content,
+    ARow:Row,
+    ACol:Col,
+    ALayoutFooter:Layout.Footer
   },
   data() {
     return {
@@ -45,6 +53,8 @@ export default {
   },
   created() {
     // document.title = this.$route.meta.title;
+    // console.log();
+    
   },
   props: ["category", "article"]
 };

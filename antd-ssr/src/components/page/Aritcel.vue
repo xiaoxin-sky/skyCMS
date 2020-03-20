@@ -38,6 +38,7 @@
 <script>
 import {mapState} from 'vuex';
 import titleMixin from '@/util/mixin.js';
+import {  divider,Icon,Row,Col,Breadcrumb } from 'ant-design-vue';
 export default {
   asyncData({ store, route }) {
     let routerParams = route.params;
@@ -68,10 +69,6 @@ export default {
       ],
     }
   },
-  mounted(){
-    // let title = this.$route.meta.title;
-    // document.title = this.routes[2].breadcrumbName+'-'+title;
-  },
   methods:{
     async like(){
       let ret = await this.axios.post('artical/addLick',{
@@ -96,6 +93,9 @@ export default {
     ...mapState({
       artData:state=>state.artDetail
     })
+  },
+  components:{
+    Adivider:divider,AIcon:Icon,ARow:Row,ACol:Col,ABreadcrumb:Breadcrumb
   }
 }
 </script>

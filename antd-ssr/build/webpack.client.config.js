@@ -5,7 +5,7 @@ const path = require('path');
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 module.exports = merge(baseConfig, {
     entry: [path.resolve(__dirname, '../src/entry.client.js')],
     module: {
@@ -14,10 +14,7 @@ module.exports = merge(baseConfig, {
                 test: /\.css$/,
                 use: [
                     {
-                        loader: MiniCssExtractPlugin.loader,
-                        options: {
-                            esModule: true,
-                        },
+                        loader: MiniCssExtractPlugin.loader
                     },
                     'css-loader']
             }
@@ -31,9 +28,10 @@ module.exports = merge(baseConfig, {
             chunkFilename: '[id].[chunkhash].css'
         }),
         new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
             'process.env.VUE_ENV': '"client"'
-        })
-
+        }),
+        new OptimizeCssAssetsPlugin()
 
     ],
     optimization: {

@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken');
 const tokenSecret = require(process.cwd()+'/model/config').tokenSecret;
 
 router.get('*',async (ctx,next)=>{
-  
   await next();
 });
 router.post('*',async (ctx,next)=>{
@@ -21,7 +20,8 @@ router.use(async (ctx,next)=>{
     使用正则匹配到过滤掉静态资源文件，例如css，js等，只处理html模板文件 
     此处只能匹配到结尾路径，如/admin/login 只能匹配到/login或者/login?code=1
    */
-
+  
+  
   let pathArr = pathToArr(ctx);
   let backendPath = pathArr.length != 0 ? pathArr[0] : null;
   if( backendPath && fs.existsSync( `${process.cwd()}/controller/${pathArr[0]}` ) ){//如果输入正确后台地址

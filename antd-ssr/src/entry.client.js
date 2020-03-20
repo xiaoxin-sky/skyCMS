@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import createApp from './main';
-import 'ant-design-vue/dist/antd.css';
 
 Vue.mixin({
     beforeRouteUpdate(to, from, next) {

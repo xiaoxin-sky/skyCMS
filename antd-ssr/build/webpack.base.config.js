@@ -6,7 +6,7 @@ const chalk = require('chalk');
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const webpack = require('webpack');
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-
+const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
     output: {
@@ -14,9 +14,9 @@ module.exports = {
         path: path.resolve(__dirname, '../dist'),
         publicPath: '/'
     },
-    mode: 'production',
-    stats: 'errors-only',
-    // devtool: 'inline-source-map',
+    mode: 'development',
+    // stats: 'errors-only',
+    devtool: 'inline-source-map',
     resolve: {
         alias: {
             '@': path.resolve(__dirname, '../src')
@@ -30,7 +30,7 @@ module.exports = {
                 options: {
                     extractCSS: true
                 }
-            }, 
+            },
             {
                 test: /\.(png|svg|jpg|gif)$/,
                 use: ['file-loader',
@@ -41,25 +41,32 @@ module.exports = {
                             mozjpeg: {
                                 progressive: true,
                                 quality: 65
-                              },
-                              // optipng.enabled: false will disable optipng
-                              optipng: {
+                            },
+                            // optipng.enabled: false will disable optipng
+                            optipng: {
                                 enabled: false,
-                              },
-                              pngquant: {
+                            },
+                            pngquant: {
                                 quality: [0.65, 0.90],
                                 speed: 4
-                              },
-                              gifsicle: {
+                            },
+                            gifsicle: {
                                 interlaced: false,
-                              },
-                              // the webp option will enable WEBP
-                              webp: {
+                            },
+                            // the webp option will enable WEBP
+                            webp: {
                                 quality: 75
-                              }
+                            }
                         },
                     },
                 ]
+            },
+            {
+                test: /\.m?js$/,
+                exclude: /(node_modules|bower_components)/,
+                use: {
+                    loader: 'babel-loader'
+                }
             }
         ]
     },
@@ -73,6 +80,6 @@ module.exports = {
         new CompressionWebpackPlugin(),
         new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /ja|it/),
         // new BundleAnalyzerPlugin(),
-        
+
     ]
 }

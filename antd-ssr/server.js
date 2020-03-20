@@ -35,6 +35,7 @@ app.use(compress({
 }))
 
 app.use(async (ctx, next) => {
+    
     const context = {
         url: ctx.url
     }
