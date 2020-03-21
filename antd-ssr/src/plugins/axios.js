@@ -1,7 +1,7 @@
 import axios from "axios";
 const config = {
-    // baseURL: 'http://api.9cka.cn/api/',
-    baseURL: 'http://localhost:3000/api/',
+    baseURL: 'http://api.9cka.cn/api/',
+    // baseURL: 'http://localhost:3000/api/',
     // timeout: 1000,
     withCredentials: true,
     headers: { 'X-Custom-Header': 'foobar' }

@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev":"NODE_ENV=development npm run build:client && npm run build:server && npm run start",
     "build:client":"webpack --config build/webpack.client.config.js",
     "build:server":"webpack --config build/webpack.server.config.js",
-    "build": "npm run build:client && npm run build:server && npm run start",
+    "build": " NODE_ENV=production  npm run build:client && npm run build:server && npm run start",
     "start": "node server.js"
   },
   "keywords": [],

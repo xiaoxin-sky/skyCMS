@@ -13,7 +13,7 @@
           </span>
         </a-list-item-meta>
         <article>{{item.summary}}</article>
-        <template >
+        <template>
           <span slot="actions">
             <a-icon type="schedule" />
             {{item.cate_name}}
@@ -35,7 +35,7 @@
     </a-list>
     <a-pagination
       class="pagination"
-      :hideOnSinglePage=true
+      :hideOnSinglePage="true"
       :itemRender="itemRender"
       v-model="current"
       :defaultPageSize="defaultPageSize"
@@ -45,26 +45,26 @@
   </div>
 </template>
 <script>
-import bus from '@/components/common/bus.js'
+import bus from "@/components/common/bus.js";
 import { mapState } from "vuex";
-import titleMixin from '@/util/mixin.js';
-import { List,Pagination,Icon } from 'ant-design-vue';
+import titleMixin from "@/util/mixin.js";
+import { List, Pagination, Icon } from "ant-design-vue";
 export default {
-  components:{
-    AList:List,
-    AListItem:List.Item,
-    AListItemMeta:List.Item.Meta,
-    APagination:Pagination,
-    AIcon:Icon
+  components: {
+    AList: List,
+    AListItem: List.Item,
+    AListItemMeta: List.Item.Meta,
+    APagination: Pagination,
+    AIcon: Icon
   },
   data() {
     return {
       defaultPageSize: 4,
-      current:1,//页码初始化，是从导航传递过来的变化，因此用store不方便，使用bus最合适
+      current: 1 //页码初始化，是从导航传递过来的变化，因此用store不方便，使用bus最合适
     };
   },
-  created(){
-    bus.$on('initCurrent',()=>{
+  created() {
+    bus.$on("initCurrent", () => {
       this.current = 1;
     });
   },
@@ -86,17 +86,16 @@ export default {
       }
     },
     itemRender(current, type, originalElement) {
-      
-        let route = this.$store.state.route;
-        let path = route.path == '/' ? '/index?page=' :`${route.path}?page=` ;
-        let prev = (this.current-1) == 0 ?  this.current : (this.current-1);
-        if (type === 'prev') {
-          return <router-link to={path+prev}>上一页</router-link>;
-        } else if (type === 'next') {
-          return <router-link to={path+(this.current+1)}>下一页</router-link>;
-        }
-        return originalElement;
-    },
+      let route = this.$store.state.route;
+      let path = route.path == "/" ? "/index?page=" : `${route.path}?page=`;
+      let prev = this.current - 1 == 0 ? this.current : this.current - 1;
+      if (type === "prev") {
+        return <router-link to={path + prev}>上一页</router-link>;
+      } else if (type === "next") {
+        return <router-link to={path + (this.current + 1)}>下一页</router-link>;
+      }
+      return originalElement;
+    }
   },
   computed: {
     routerPath() {
@@ -109,7 +108,7 @@ export default {
     })
   },
   asyncData({ store, route }) {
-    let skipNum = (route.query&&route.query.page) || 1;
+    let skipNum = (route.query && route.query.page) || 1;
     let category = (route.params && route.params.category) || "index";
     let params = {
       skipNum: skipNum,
@@ -118,14 +117,32 @@ export default {
     };
     return store.dispatch("articleList", { params });
   },
-  mixins:[titleMixin],
-  title(){
-    let artDetail = this.listData[0];
+  mixins: [titleMixin],
+  title() {
+    let navBarData = this.$store.state.navBarData;
+    let path = this.$store.state.route.path;
+    // console.log(path);
+
+    let cate_name = "";
+    //这里只进行遍历顶级导航和二级导航遍历，注意后台设置导航英文名称不可有字母重复 比如一级导航是 studyImp 二级导航不能只设置study
+    navBarData.forEach(item => {
+      if (path.indexOf(item.cate_path) !== -1) {
+        return (cate_name = item.cate_name);
+      } else if (item.children && item.children.length > 0) {
+        let children = item.children;
+        children.forEach(childItem =>{
+          if(path.indexOf(childItem.cate_path) !== -1){
+            return (cate_name = childItem.cate_name);
+          }
+        });
+      }
+    });
     let query = this.$store.state.route.query;
     // 如果文章列表页码存在并且不是第一页，则给标题添加页码。
-    let page = query&&query.page&&query.page>1 ? `-第${query.page}页` : '';
-    return artDetail&&(artDetail.cate_name+page);
-  },
+    let page =
+      query && query.page && query.page > 1 ? `-第${query.page}页` : "";
+    return cate_name + page;
+  }
 };
 </script>
 <style>

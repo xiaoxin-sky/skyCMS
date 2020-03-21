@@ -14,9 +14,9 @@ module.exports = {
         path: path.resolve(__dirname, '../dist'),
         publicPath: '/'
     },
-    mode: 'development',
+    mode: 'production',
     // stats: 'errors-only',
-    devtool: 'inline-source-map',
+    // devtool: 'inline-source-map',
     resolve: {
         alias: {
             '@': path.resolve(__dirname, '../src')
