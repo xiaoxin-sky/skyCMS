@@ -38,7 +38,7 @@
 <script>
 import {mapState} from 'vuex';
 import titleMixin from '@/util/mixin.js';
-import {  divider,Icon,Row,Col,Breadcrumb } from 'ant-design-vue';
+import {  divider,Icon,Row,Col,Breadcrumb,message } from 'ant-design-vue';
 export default {
   asyncData({ store, route }) {
     let routerParams = route.params;
@@ -74,18 +74,18 @@ export default {
       let ret = await this.axios.post('artical/addLick',{
         'id':this.artData._id
       });
-      this.$message.config({
+      message.config({
         top: `15%`,
         duration: 2,
         maxCount: 3,
       });
       if(ret.code==200){
         this.userlike = this.userlike+1;
-        this.$message.success('感谢您的赞美！');
+        message.success('感谢您的赞美！');
       }else if(ret.code==201){
-        this.$message.warning('过多的赞美，会使我膨胀的哦！');
+        message.warning('过多的赞美，会使我膨胀的哦！');
       }else{
-        this.$message.error('理解您想赞美我的心情，但是现在系统出错啦，请待会儿重试哦！');
+        message.error('理解您想赞美我的心情，但是现在系统出错啦，请待会儿重试哦！');
       }
     }
   },
