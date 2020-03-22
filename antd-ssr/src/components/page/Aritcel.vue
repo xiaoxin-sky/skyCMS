@@ -25,8 +25,8 @@
         <a-col><a-icon type="fire" /> {{artData.views}}</a-col>
       </a-row>
     </section>
-    <div class="article ql-snow" >
-      <article class="ql-editor" v-html="artData.content"></article>
+    <div class="article markdown-body" >
+      <article v-html="artData.content"></article>
     </div>
     <div class="like">
       <a class="like-warp" @click="like" style=""><a-icon type="like" /></a>
@@ -38,7 +38,8 @@
 <script>
 import {mapState} from 'vuex';
 import titleMixin from '@/util/mixin.js';
-import {  divider,Icon,Row,Col,Breadcrumb,message } from 'ant-design-vue';
+import 'github-markdown-css';
+import {  Divider,Icon,Row,Col,Breadcrumb,message } from 'ant-design-vue';
 export default {
   asyncData({ store, route }) {
     let routerParams = route.params;
@@ -95,13 +96,14 @@ export default {
     })
   },
   components:{
-    Adivider:divider,AIcon:Icon,ARow:Row,ACol:Col,ABreadcrumb:Breadcrumb
+    ADivider:Divider,AIcon:Icon,ARow:Row,ACol:Col,ABreadcrumb:Breadcrumb
   }
 }
 </script>
 
 
 <style>
+
 /*   .warp img{
     max-width: 100%;
     vertical-align:bottom;
@@ -111,6 +113,8 @@ export default {
   }
   .warp .title{
     text-align: center;
+    font-size: 25px;
+    padding: 10px;
   }
   .warp .artDescribe i{
     vertical-align: middle;

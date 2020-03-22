@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-list itemLayout="vertical" size="large" :dataSource="listData">
-      <a-list-item slot="renderItem" slot-scope="item" key="item.title">
+      <a-list-item  slot="renderItem" slot-scope="item" key="item.title">
         <template slot="extra">
           <a :href="routerPath(item)" class="imgWarp">
             <img :alt="item.title" :src="item.imageUrl" />
@@ -154,8 +154,12 @@ export default {
   overflow: hidden;
 }
 .imgWarp > img {
-  width: 100%;
-  max-height: 134px;
+  height: 100%;
+  transform: scale(1);
+  transition: all .3s linear;
+}
+.ant-list-item:hover .imgWarp > img{
+  transform: scale(1.05);
 }
 .pagination {
   text-align: right;

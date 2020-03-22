@@ -4,7 +4,6 @@ import { createRouter } from "./router";
 import { createStore } from './store';
 import { sync } from 'vuex-router-sync'
 import axios from "./plugins/axios";
-
 Vue.use(axios);
 export default function createApp() {
     const router = createRouter();
