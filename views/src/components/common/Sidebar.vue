@@ -96,7 +96,7 @@ export default {
                 },
                 {
                     icon: 'el-icon-lx-people',
-                    index: 'table',
+                    index: 'users',
                     title: '用户管理'
                 },
                 {

@@ -54,6 +54,10 @@ export default new Router({
                     meta: { title: '文件上传' }
                 },
                 {
+                    path:'users',
+                    redirect:'permission'
+                },
+                {
                     // 权限页面
                     path: 'permission',
                     component: () => import(/* webpackChunkName: "permission" */ '../components/page/Permission.vue'),

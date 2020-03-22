@@ -21,11 +21,11 @@
                 <el-upload
                 class="avatar-uploader"
                 :action="action"
-                :headers="{ 'Content-Type': 'multipart/form-data' }"
+                :headers="headers"
                 :show-file-list="false"
                 :on-success="handleAvatarSuccess" >
-                <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
                 <el-input
                     type="textarea"
@@ -88,7 +88,7 @@ export default {
     name: 'markdown',
     data: function() {
         return {
-            action:'http://api.9cka.cn/admin/artical/uploadImg',
+            action:'http://localhost:3000/admin/artical/uploadImg',
             content: '',
             html: '',
             imageUrl: '',//文章列表显示的图片
@@ -233,6 +233,19 @@ export default {
             return (
                 date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + month + ':' + second
             );
+        }
+    },
+    computed:{
+        headers:function(){
+            let token = localStorage.getItem('access_token');
+            if (token) {
+                return  {
+                    'access-token': token,
+                    'authorization': 'Bearer '+token,
+                }
+            }else{
+                this.$message.error('登陆失效!');
+            }
         }
     }
 };
