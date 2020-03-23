@@ -88,7 +88,7 @@ export default {
     name: 'markdown',
     data: function() {
         return {
-            action:'http://localhost:3000/admin/artical/uploadImg',
+            action:'http://api.9cka.cn/admin/artical/uploadImg',
             content: '',
             html: '',
             imageUrl: '',//文章列表显示的图片
@@ -133,14 +133,15 @@ export default {
     },
     methods: {
         handleAvatarSuccess(res, file) {
-         this.imageUrl = URL.createObjectURL(file.raw);
+            if(res.code==1){
+                this.imageUrl = res.imgUrl;
+            }
         },
         // 将图片上传到服务器，返回地址替换到md中
         $imgAdd(pos, $file) {
             var formdata = new FormData();
             formdata.append('file', $file);
             articalApi('uploadImg', formdata).then(ret => {
-                console.log(ret);
                 if (ret.code == 1) {
                     this.$refs.md.$img2Url(pos, ret.imgUrl);
                     //添加文章列表首张图
@@ -165,15 +166,9 @@ export default {
         },
         change(value, render) {
             // render 为 markdown 解析后的结果
-            console.log('render', render);
             this.imageUrl = this.getFirstImgPath(render);
             this.summary = this.delHtmlTag(render);
             this.html = render;
-        },
-        submit() {
-            console.log(this.content);
-            console.log(this.html);
-            this.$message.success('提交成功！');
         },
         setData(json) {
             this.editData = json;
@@ -207,7 +202,7 @@ export default {
                 views: this.views,
                 like: this.like
             };
-            console.log(articalData);
+            // console.log(articalData);
 
             if (this._id) {
                 articalData._id = this._id;

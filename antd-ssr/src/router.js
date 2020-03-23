@@ -11,9 +11,8 @@ export function createRouter() {
                 component: () => import(/* webpackChunkName: "Index" */ '@/components/common/Index.vue'),
                 meta: { title: '小新的个人博客网站-sky博客CMS-自学前端技术视频分享' },
                 children:[
-                    
                     {
-                        path:':category?',
+                        path:':category?(.html)?',
                         component:()=>import(/* webpackChunkName: "category" */'@/components/page/ArticleList.vue'),
                         meta: { title: '小新的个人博客网站-sky博客CMS-自学前端技术视频分享' },
                         props: true,

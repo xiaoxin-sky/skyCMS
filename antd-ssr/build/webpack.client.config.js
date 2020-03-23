@@ -25,7 +25,7 @@ module.exports = merge(baseConfig, {
         new CleanWebpackPlugin(),
         new MiniCssExtractPlugin({
             filename: '[name].[chunkhash].css',
-            chunkFilename: '[id].[chunkhash].css'
+            chunkFilename: '[name].[id].[chunkhash].css'
         }),
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),

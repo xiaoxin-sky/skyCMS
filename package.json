@@ -62,7 +62,6 @@
     "webpack-cli": "^3.3.11"
   },
   "scripts": {
-    "test": "node app.js",
     "start": "node app.js"
   },
   "author": "skybk",

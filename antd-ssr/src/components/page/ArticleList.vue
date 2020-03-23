@@ -60,7 +60,8 @@ export default {
   data() {
     return {
       defaultPageSize: 4,
-      current: 1 //页码初始化，是从导航传递过来的变化，因此用store不方便，使用bus最合适
+      current: 1, //页码初始化，是从导航传递过来的变化，因此用store不方便，使用bus最合适
+      
     };
   },
   created() {
@@ -139,8 +140,7 @@ export default {
     });
     let query = this.$store.state.route.query;
     // 如果文章列表页码存在并且不是第一页，则给标题添加页码。
-    let page =
-      query && query.page && query.page > 1 ? `-第${query.page}页` : "";
+    let page = query && query.page && query.page > 1 ? `-第${query.page}页` : "";
     return cate_name + page;
   }
 };
@@ -152,6 +152,7 @@ export default {
   height: 134px;
   text-align: center;
   overflow: hidden;
+  border-radius: 6px;
 }
 .imgWarp > img {
   height: 100%;
@@ -159,7 +160,7 @@ export default {
   transition: all .3s linear;
 }
 .ant-list-item:hover .imgWarp > img{
-  transform: scale(1.05);
+  transform: scale(1.10);
 }
 .pagination {
   text-align: right;
