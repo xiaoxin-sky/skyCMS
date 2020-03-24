@@ -1,5 +1,20 @@
+::: hljs-center
+
+#  skyCMS
+
+:::
+
+
+::: hljs-center
+
+ ![sky-cms](https://www.travis-ci.org/1912820899/skyCMS.svg?branch=master)
+
+:::
+
+
 ## 一、这是一个什么项目？
 
+https://www.travis-ci.org/1912820899/skyCMS.svg?branch=master
 基于Node.js Koa2 Vue SSR mongodb的一套博客网站，后台管理系统使用SPA前后端分离，前台拥有2套代码，使用Vue SSR构建和常规前后端分离构建。
 
 博客线上地址是：http://www.9cka.cn
@@ -8,11 +23,11 @@
 
 **2.1.  Node.js Koa2服务端 API**
 
-​	✅文章管理功能
-
-​	✅分类管理功能
-
-​	✅图片上传功能
+	✅文章管理功能
+	
+	✅分类管理功能
+	
+	✅图片上传功能
 
 **2.2. 博客前端展示采用2套代码实现**
 
@@ -21,7 +36,7 @@
 
 **2.3. 后台管理系统**
 
-​	✅使用Vue.js Element ui 搭建的后台管理系统
+	✅使用Vue.js Element ui 搭建的后台管理系统
 
 **2.4. 优点**
 
