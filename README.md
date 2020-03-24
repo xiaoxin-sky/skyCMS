@@ -1,15 +1,6 @@
-::: hljs-center
+#  									skyCMS
 
-#  skyCMS
-
-:::
-
-
-::: hljs-center
-
- ![sky-cms](https://www.travis-ci.org/1912820899/skyCMS.svg?branch=master)
-
-:::
+​    																					![sky-cms](https://www.travis-ci.org/1912820899/skyCMS.svg?branch=master)
 
 
 ## 一、这是一个什么项目？
