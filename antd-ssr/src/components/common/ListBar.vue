@@ -59,10 +59,6 @@ export default {
 </script>
 
 <style  scoped>
-/* .sky-warp {
-  background: #fff;
-  min-height: 380px;
-} */
 .sky-plug {
   background: #ffffff;
   min-height: 40px;

@@ -1,14 +1,16 @@
 import axios from "axios";
 const config = {
-    baseURL: 'http://api.9cka.cn/api/',
+    baseURL: 'https://api.9cka.cn/api/',
     // baseURL: 'http://localhost:3000/api/',
     // timeout: 1000,
-    withCredentials: true,
-    headers: { 'X-Custom-Header': 'foobar' }
+    withCredentials: true
 }
 const _axios = axios.create(config);
 _axios.interceptors.request.use(
     function (config) {
+        config.headers = {
+            'Content-Type':'application/json'
+        }
         return config;
     },
     function (error) {

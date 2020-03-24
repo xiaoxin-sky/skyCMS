@@ -103,11 +103,6 @@ export default {
 
 
 <style>
-
-/*   .warp img{
-    max-width: 100%;
-    vertical-align:bottom;
-  } */
   .warp .article{
     margin-top: 20px;
   }
