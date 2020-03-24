@@ -64,7 +64,7 @@
     "webpack-cli": "^3.3.11"
   },
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --exit",
     "start": "node start.js"
   },
   "author": "skybk",
