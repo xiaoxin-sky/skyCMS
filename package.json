@@ -58,12 +58,14 @@
     "ylru": "^1.2.1"
   },
   "devDependencies": {
+    "mocha": "^7.1.1",
+    "supertest": "^4.0.2",
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11"
   },
   "scripts": {
-    "test":"",
-    "start": "node app.js"
+    "test": "mocha",
+    "start": "node start.js"
   },
   "author": "skybk",
   "license": "ISC"

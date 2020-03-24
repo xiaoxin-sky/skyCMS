@@ -91,7 +91,5 @@ app.on('error', async (err, ctx, next) => {
   ctx.res.end(JSON.stringify(errStruct));
 });
 
-app.listen('3000');
-console.log('程序已启动');
-
+module.exports = app;
 

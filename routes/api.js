@@ -11,12 +11,17 @@ router.post('*',async (ctx,next)=>{
 router.use(async (ctx,next)=>{
 
     let pathArr = pathToArr(ctx);
-    if(pathArr.length != 3 ) ctx.throw('api地址不正确');
+    if(pathArr.length != 3 ){ 
+       return ctx.body = {"code":201,"msg":"接口不存在"}
+    }
 
     let method = pathArr.pop();
     let path = `/${pathArr.join('/')}`; //api控制器类的相对地址
-    let absolutePath = await  tools.controllerExit(ctx,path).catch(()=>ctx.throw('api控制器不存在'));
-
+    let absolutePath = await  tools.controllerExit(ctx,path).catch(()=>false);
+    if(!absolutePath){
+        return ctx.body = {"code":201,"msg":"接口不存在"}
+    }
+    
     await require(absolutePath)(ctx,method);
     // next();
 })
