@@ -5,7 +5,6 @@
 
 ## 一、这是一个什么项目？
 
-https://www.travis-ci.org/1912820899/skyCMS.svg?branch=master
 基于Node.js Koa2 Vue SSR mongodb的一套博客网站，后台管理系统使用SPA前后端分离，前台拥有2套代码，使用Vue SSR构建和常规前后端分离构建。
 
 博客线上地址是：http://www.9cka.cn
