@@ -41,7 +41,7 @@ app.use(koaBody({
 }));
 
 app.use(async (ctx,next)=>{
-  ctx.state.__HOST__ = 'http://'+ctx.header.host;
+  ctx.state.__HOST__ = 'https://'+ctx.header.host;
   await next();
 })
 //配置静态资源
