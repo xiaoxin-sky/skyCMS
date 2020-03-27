@@ -28,8 +28,7 @@ class Login  {
     // }
   }
   async dologin(ctx){
-    var userInfo = ctx.request.query;
-    
+    let userInfo = ctx.request.query;
     if(userInfo){
       var res = await db.find('user',{user_name:userInfo.username,password:userInfo.password});
       if(res.length>0){

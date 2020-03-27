@@ -18,10 +18,7 @@ class Category {
     }
     async getCategoryDataList(ctx){
         let categoryData = await db.find('categorys');
-        
         ctx.body = {code:'1','categoryData':categoryData};
-        
-        
     }
     /**
      * 清空所有分类数据

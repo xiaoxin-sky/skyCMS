@@ -59,7 +59,7 @@ app.use(function(ctx, next){
   });
 });
 app.use(koaJwt({secret:tokenSecret}).unless({
-  path:[/login/,/^\/api/]
+  path:[/login/,/^\/api/,/sitemap\.xml/]
 }));
 
 // 开启路由

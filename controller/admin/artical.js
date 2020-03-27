@@ -1,8 +1,10 @@
-let db = require(process.cwd()+'/model/db');
+let rootPath = process.cwd();
+let db = require(rootPath+'/model/db');
 let jwt = require('jsonwebtoken');
-let tokenSecret = require(process.cwd()+'/model/config').tokenSecret;
-let uploadImg = require(process.cwd()+'/model/uploadImg');
-
+let tokenSecret = require(rootPath+'/model/config').tokenSecret;
+let uploadImg = require(rootPath+'/model/uploadImg');
+let updateSiteMap = require(rootPath+'/model/sitemap');
+let moment = require('moment');
 class Artical {
     constructor(ctx,method){
         this.ctx = ctx;
@@ -25,11 +27,18 @@ class Artical {
         let insertData = ctx.request.body;
         let token = ctx.request.headers['authorization'].split(' ')[1];
         let decodedRes = await jwt.verify(token,tokenSecret);
-
+        let __HOST__ = ctx.state.__HOST__;
         insertData.user_name = decodedRes.user_name;
-
+        
         let ret = await db.insert('articals',insertData);
+        let insertedId = ret.insertedId;
         if(ret.result.ok==1){
+            updateSiteMap({
+                url:`${__HOST__}/${insertData.cate_path}/${insertedId}`,
+                lastmod:moment().format(),
+                changefreq:'monthly',
+                priority:0.6,
+            });
             ctx.body = {'code':1,'msg':'添加成功'};
         }else{
             ctx.body = {'code':0,'msg':'添加失败'};
@@ -68,9 +77,17 @@ class Artical {
             let filter = {'_id':{$in:tmpIdArr}};
             ret = await db.upDateMany('articals',filter,query);
         }else{
+            //这里只做了markdown 提交的修改的 sitemap变更。
+            updateSiteMap({
+                url:`${__HOST__}/${query.cate_path}/${query._id}`,
+                lastmod:moment().format(),
+                changefreq:'monthly',
+                priority:0.6,
+            });
             ret = await db.upDateupOne('articals',query)
         }
         if(ret){
+            
             ctx.body = {'code':1,'msg':'修改成功'};
         }else{
             ctx.body = {'code':0,'msg':'修改失败'};
