@@ -6,27 +6,25 @@ const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const isProd = process.env.NODE_ENV === 'production';
-
 module.exports = merge(baseConfig, {
-    entry: {
-        app:path.resolve(__dirname, '../src/entry.client.js')
-    },
+    entry: [path.resolve(__dirname, '../src/entry.client.js')],
     module: {
         rules: [
             {
                 test: /\.css$/,
                 use: [
-                    isProd ? { loader: MiniCssExtractPlugin.loader } : 'style-loader',
+                    {
+                        loader: MiniCssExtractPlugin.loader
+                    },
                     'css-loader']
             }
         ]
     },
-    plugins: isProd?[
+    plugins: [
         new VueSSRClientPlugin(),
-        new CleanWebpackPlugin(), 
+        new CleanWebpackPlugin(),
         new MiniCssExtractPlugin({
-            filename: '[name].[hash].css',
+            filename: '[name].[chunkhash].css',
             chunkFilename: '[name].[id].[chunkhash].css'
         }),
         new webpack.DefinePlugin({
@@ -35,13 +33,6 @@ module.exports = merge(baseConfig, {
         }),
         new OptimizeCssAssetsPlugin()
 
-    ]:[
-        new VueSSRClientPlugin(),
-        new CleanWebpackPlugin(), 
-        new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-            'process.env.VUE_ENV': '"client"'
-        })
     ],
     optimization: {
         splitChunks: {

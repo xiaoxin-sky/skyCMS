@@ -7,15 +7,16 @@ const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const webpack = require('webpack');
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const isProd = process.env.NODE_ENV === 'production';
+
 module.exports = {
     output: {
-        filename: '[name].[hash].js',
+        filename: '[name].[chunkhash].js',
         path: path.resolve(__dirname, '../dist'),
         publicPath: '/'
     },
-    mode: process.env.NODE_ENV,
-    stats:isProd ? 'errors-only' : 'normal',
-    devtool: isProd ? 'false':'inline-source-map',
+    mode: 'production',
+    // stats: 'errors-only',
+    // devtool: 'inline-source-map',
     resolve: {
         alias: {
             '@': path.resolve(__dirname, '../src')

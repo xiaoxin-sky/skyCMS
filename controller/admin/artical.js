@@ -35,7 +35,7 @@ class Artical {
         if(ret.result.ok==1){
             updateSiteMap({
                 url:`${__HOST__}/${insertData.cate_path}/${insertedId}`,
-                lastmod:moment().format(),
+                lastmod:moment(new Date().toLocalDateString).format('YYYY-MM-DD'),
                 changefreq:'monthly',
                 priority:0.6,
             });
@@ -80,7 +80,7 @@ class Artical {
             //这里只做了markdown 提交的修改的 sitemap变更。
             updateSiteMap({
                 url:`${__HOST__}/${query.cate_path}/${query._id}`,
-                lastmod:moment().format(),
+                lastmod:moment(new Date().toLocalDateString).format('YYYY-MM-DD'),
                 changefreq:'monthly',
                 priority:0.6,
             });

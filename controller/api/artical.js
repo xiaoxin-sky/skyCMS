@@ -1,5 +1,4 @@
 const db = require(process.cwd()+'/model/db');
-
 class Artical {
   constructor(ctx,method){
     this.ctx = ctx;

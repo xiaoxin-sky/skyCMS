@@ -28,7 +28,9 @@ module.exports = async function updateSiteMap(data){
 function isAddURL(data) {
     return new Promise((resolve, reject) => {
         let isAdd = true;
-        const smStream = new SitemapStream();
+        const smStream = new SitemapStream({
+            lastmodDateOnly:true
+        });
         const updateEntries = new Transform({
             objectMode: true,
             transform(chunk, encoding, callback) {
@@ -66,7 +68,9 @@ function isAddURL(data) {
  * @param {object} data 单条url对象
  */
 function addURL(data) {
-    const smStream = new SitemapStream();
+    const smStream = new SitemapStream({
+        lastmodDateOnly:true
+    });
     smStream.write(data);
     const pipeline = createReadStream(smPath)
         .pipe(new XMLToSitemapItemStream())
@@ -86,7 +90,9 @@ function addURL(data) {
  * @param {object} data 单条url对象
  */
 function createSM(data) {
-    const sitemap = new SitemapStream();
+    const sitemap = new SitemapStream({
+        lastmodDateOnly:true
+    });
     const writeStream = createWriteStream(smPath);
     sitemap.pipe(writeStream);
     sitemap.write(data);
