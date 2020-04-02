@@ -7,7 +7,7 @@
     "dev": "cross-env NODE_ENV=development node server.js",
     "build:client": "cross-env NODE_ENV=production webpack --config build/webpack.client.config.js",
     "build:server": "cross-env NODE_ENV=production webpack --config build/webpack.server.config.js",
-    "build": "cross-env NODE_ENV=production  npm run build:client && npm run build:server",
+    "build": "npm run build:client && npm run build:server",
     "server":"cross-env NODE_ENV=production node server.js",
     "start": "npm run build && npm run dev"
   },

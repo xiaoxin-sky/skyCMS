@@ -1,12 +1,11 @@
 
+
 const { createBundleRenderer } = require('vue-server-renderer')
-const path = require('path');
 const isProd = process.env.NODE_ENV === 'production';
-const fs = require('fs');
 const axios = require('axios');
-module.exports = function (app,templatePath) {
+module.exports = function(app,templatePath){
+    const template = require('fs').readFileSync(templatePath, 'utf-8');
     let renderer;
-    let template = fs.readFileSync(path.join(__dirname,'..',templatePath), 'utf-8');
     const renderData = (ctx, renderer) => {
         const context = {
           url: ctx.url
@@ -20,31 +19,16 @@ module.exports = function (app,templatePath) {
           })
         })
     }
-    function createRenderer(bundle, options) {
-        return createBundleRenderer(bundle, Object.assign(options, {
-            /*  cache: LRU({
-                 max: 1000,
-                 maxAge: 1000 * 60 * 15
-             }), */
-            runInNewContext: false
-        }))
-    }
     if(isProd){
-        
-        const bundle = fs.readFileSync( path.resolve(process.cwd(),'dist/vue-ssr-server-bundle.json'));
-        const clientManifest = fs.readFileSync( path.resolve(process.cwd(),'dist/vue-ssr-client-manifest.json'));
-        try{
-            renderer = createBundleRenderer(bundle, {
-                template,
-                clientManifest,
-                runInNewContext: false
-            })
-        }catch(err){
-            console.log(err);
-            
-        }
+        const bundle = require('./dist/vue-ssr-server-bundle.json');
+        const clientManifest = require('./dist/vue-ssr-client-manifest.json');
+        renderer = createBundleRenderer(bundle, {
+            template,
+            clientManifest,
+            runInNewContext: false
+        })
     }else{
-        const setupDevServer = require('./setup-dev-middleware');
+        const setupDevServer = require('./build/setup-dev-middleware');
         setupDevServer(app, template, (bundle, options) => {
             try {
                 renderer = createRenderer(bundle, options)
@@ -67,8 +51,6 @@ module.exports = function (app,templatePath) {
         let html, status
         try {
             status = 200
-            console.log(renderer);
-            
             html = await renderData(ctx, renderer)
         } catch (e) {
             console.log('\ne', e)
@@ -85,19 +67,12 @@ module.exports = function (app,templatePath) {
         ctx.body = html
     })
 }
-
-
- //获取渲染数据
-/*  function renderData(ctx, renderer){
-    return new Promise((resolve, reject) => {
-        const context = {
-            url: ctx.url
-        }
-        renderer.renderToString(context, (err, html) => {
-            if (err) {
-                return reject(err)
-            }
-            resolve(html)
-        })
-    })
-} */
+function createRenderer(bundle, options) {
+    return createBundleRenderer(bundle, Object.assign(options, {
+        /*  cache: LRU({
+             max: 1000,
+             maxAge: 1000 * 60 * 15
+         }), */
+        runInNewContext: false
+    }))
+}

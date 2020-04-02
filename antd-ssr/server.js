@@ -3,7 +3,7 @@ const app = new Koa();
 const static = require('koa-static');
 const favicon = require('koa-favicon');
 const compress = require('koa-compress');
-const vueSSR = require('./build/vue-ssr-middleware');
+const ssr = require('./vue-ssr');
 app.use(static('/'));
 app.use(static('./dist'));
 app.use(static('./public'));
@@ -17,7 +17,7 @@ app.use(compress({
     threshold: 2048,
     flush: require('zlib').Z_SYNC_FLUSH
 }))
-vueSSR(app,'./template.html');
+ssr(app,'./template.html')
 app.listen(3001);
 console.log('启动成功:', 'http://localhost:3001/');
 

@@ -5,7 +5,7 @@ const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const chalk = require('chalk');
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const webpack = require('webpack');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const isProd = process.env.NODE_ENV === 'production';
 module.exports = {
     output: {
