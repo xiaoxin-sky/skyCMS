@@ -1,5 +1,4 @@
 function getTitle(vm) {
-
     let path = vm.$route.path;
     let metaTitle = vm.$route.meta.title;
     if (path == '/' || path == '/index' || path == '/index/') {

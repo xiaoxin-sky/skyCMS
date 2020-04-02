@@ -1,18 +1,18 @@
 <template>
-  <div>
+  <div class="">
     <a-list itemLayout="vertical" size="large" :dataSource="listData">
       <a-list-item  slot="renderItem" slot-scope="item" key="item.title">
-        <template slot="extra">
-          <a :href="routerPath(item)" class="imgWarp">
+        <template slot="extra" >
+          <router-link :to="routerPath(item)" class="imgWarp">
             <img :alt="item.title" :src="item.imageUrl" />
-          </a>
+          </router-link>
         </template>
         <a-list-item-meta>
           <span slot="title">
-            <a :href="routerPath(item)" :style="{color:item.titlecolor}">{{item.title}}</a>
+            <router-link :to="routerPath(item)" :style="{color:item.titlecolor}">{{item.title}}</router-link>
           </span>
         </a-list-item-meta>
-        <article>{{item.summary}}</article>
+        <article class="summary">{{item.summary}}</article>
         <template>
           <span slot="actions">
             <a-icon type="schedule" />
@@ -122,8 +122,6 @@ export default {
   title() {
     let navBarData = this.$store.state.navBarData;
     let path = this.$store.state.route.path;
-    // console.log(path);
-
     let cate_name = "";
     //这里只进行遍历顶级导航和二级导航遍历，注意后台设置导航英文名称不可有字母重复 比如一级导航是 studyImp 二级导航不能只设置study
     navBarData.forEach(item => {
@@ -162,7 +160,21 @@ export default {
 .ant-list-item:hover .imgWarp > img{
   transform: scale(1.10);
 }
+.summary{
+  overflow: hidden;
+}
 .pagination {
-  text-align: right;
+  text-align: center;
+}
+@media screen and (max-width:576px){
+.ant-list-vertical .ant-list-item-action > li{
+  padding: 0 3px;
+}
+.imgWarp{
+  display: none;
+}
+.ant-list-vertical .ant-list-item-meta-title{
+  margin-bottom: 0;
+}
 }
 </style>

@@ -44,6 +44,11 @@ export function createStore() {
             },
             setArtDetail(state,data){
                 Vue.set(state,'artDetail',data);
+            },
+            addLick(state){
+                console.log('1111');
+                
+                Vue.set(state.artDetail,'like',state.artDetail.like+1);
             }
         },
         actions: {

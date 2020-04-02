@@ -19,7 +19,20 @@ module.exports = merge(baseConfig, {
                 use: [
                     isProd ? { loader: MiniCssExtractPlugin.loader } : 'style-loader',
                     'css-loader']
-            }
+            },
+          /*   {
+                test: /\.scss$/,
+                use: [isProd ? { loader: MiniCssExtractPlugin.loader }  : 'vue-style-loader', 'css-loader', 'postcss-loader',
+                  {
+                    loader: 'sass-loader',
+                    options: isProd ? {} : {sourceMap: 'inline'}
+                  }
+                ]
+            }, */
+            // {
+            //     test: /\.scss$/,
+            //     use: ["style-loader", "css-loader", "sass-loader"]
+            // },
         ]
     },
     plugins: isProd?[

@@ -4,6 +4,7 @@ const baseConfig = require('./webpack.base.config');
 const VueSSRServerPlugin = require('vue-server-renderer/server-plugin');
 const nodeExternals = require('webpack-node-externals')
 const webpack = require('webpack');
+const isProd = process.env.NODE_ENV === 'production';
 module.exports = merge(baseConfig, {
     target: 'node',
     entry: path.resolve(__dirname, '../src/entry.server.js'),
@@ -11,9 +12,9 @@ module.exports = merge(baseConfig, {
         libraryTarget: 'commonjs2'
     },
     externals:nodeExternals({
-        whitelist: /\.css$/,
+        whitelist: /\.(s)?css$/,
         modulesFromFile:{ 
-            include :[ 'vue-style-loader' ] 
+            include :[ 'vue-style-loader','sass-loader',"style-loader", "css-loader" ] 
         }
     }),
     module: {
@@ -22,8 +23,9 @@ module.exports = merge(baseConfig, {
                 test: /\.css$/,
                 use: [
                     'vue-style-loader',
-                    'css-loader']
-            }
+                    'css-loader',
+                ]
+            },
         ]
     },
     plugins: [
