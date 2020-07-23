@@ -4,3 +4,4 @@ dist.zip
 node_modules.zip
 server.zip
 antd-ssr/build.zip
+config-copy.js

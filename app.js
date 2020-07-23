@@ -48,7 +48,6 @@ app.use(async (ctx,next)=>{
 app.use(static('./public'));
 
 app.use(function(ctx, next){
-  
   return next().catch((err) => {
       if (401 == err.status) {
           ctx.status = 401;

@@ -27,7 +27,7 @@ class Artical {
         let insertData = ctx.request.body;
         let token = ctx.request.headers['authorization'].split(' ')[1];
         let decodedRes = await jwt.verify(token,tokenSecret);
-        let __HOST__ = ctx.state.__HOST__;
+        let __HOST__ = 'https://www.9cka.cn';
         insertData.user_name = decodedRes.user_name;
         
         let ret = await db.insert('articals',insertData);

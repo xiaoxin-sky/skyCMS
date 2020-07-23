@@ -1,6 +1,6 @@
 var app = {
-   url : "mongodb://localhost:27017",
-   dbName : 'bk-cms',
-   tokenSecret : 'ILOVECHEN'
+   url : "",
+   dbName : '',
+   tokenSecret : ''
 }
 module.exports = app;
